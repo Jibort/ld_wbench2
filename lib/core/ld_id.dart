@@ -10,13 +10,13 @@ mixin LdId {
 
   // MEMBRES --------------------------
   final int _id = newId;
-  final String _type = objectRuntimeType.toString();
+  String rtType = objectRuntimeType.toString();
   String? _tag;
 
   // GETTERS/SETTERS ------------------
   int get id => _id;
-  String get type => _type;
-  String get tag => _tag ?? "${_type}_undef";
+  String get type => rtType;
+  String get tag => _tag ?? "${rtType}_undef";
   set tag(String pTag) => _tag = pTag;
 }
 

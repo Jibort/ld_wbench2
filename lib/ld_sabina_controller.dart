@@ -3,10 +3,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:ld_wbench2/core/ld_id.dart';
+import 'package:ld_wbench2/core/ld_registrable.dart';
 import 'package:ld_wbench2/services/services.dart';
 import 'package:ld_wbench2/tools/debug.dart';
 
-class LdSabinaController extends FullLifeCycleController {
+class LdSabinaController extends FullLifeCycleController
+with LdId, LdRegistrable {
   // ESTÀTICS -------------------------
   static const className = "LdSabinaCtrl";
 
@@ -15,6 +18,7 @@ class LdSabinaController extends FullLifeCycleController {
 
   // CONSTRUCTOR ----------------------
   LdSabinaController() {
+    register(tag);
     var _ = _secStg;
   }
 
@@ -97,6 +101,7 @@ class LdSabinaController extends FullLifeCycleController {
 
   // Quan l'aplicació és tancada pel sistema operatiu
   void onDetached() {
+    LdRegistrable.delete(_secStg.tag);
     Debug.info("[onDetached.${runtimeType.toString()}]: L'aplicació ha estat completament tancada.");
   }
 

@@ -1,8 +1,6 @@
 // Classe base dels estats de vistes de l'aplicació.
 // CreatedAt: 2025/02/15 ds. JIQ
 
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ld_wbench2/core/deep_do.dart';
 import 'package:ld_wbench2/core/ld_deep.dart';
 import 'package:ld_wbench2/core/ld_view_controller.dart';
@@ -10,7 +8,8 @@ import 'package:ld_wbench2/tools/debug.dart';
 import 'package:ld_wbench2/views/widget_key.dart';
 
 
-abstract class LdViewState<S extends LdViewState<S, C>, C extends LdViewController<C, S>> extends LdDeep {
+abstract class LdViewState<S extends LdViewState<S, C>, C extends LdViewController<C, S>>
+extends LdDeep {
   // MEMBRES --------------------------
   LoadState _loadState = LoadState.isNew;
   bool virgin = true;
@@ -21,22 +20,24 @@ abstract class LdViewState<S extends LdViewState<S, C>, C extends LdViewControll
   String? _message;
   String? _errorCode;
   String? _errorMessage;
-
+  Exception? _exception;
 
   // CONSTRUCTORS ---------------------
   LdViewState({ 
-    super.key, 
     required super.pTag,
     required String pTitle, 
     String? pSubtitle, 
     String? pMessage,
     String? pErrCode,
-    String? pErrMsg })
-  : _title = pTitle,
+    String? pErrMsg,
+    Exception? pException, 
+  }): 
+    _title = pTitle,
     _subtitle = pSubtitle,
     _message = pMessage, 
     _errorCode = pErrCode, 
-    _errorMessage = pErrMsg;
+    _errorMessage = pErrMsg,
+    _exception = pException;
 
   // GETTERS/SETTERS ------------------
   String  get title => _title;
@@ -60,7 +61,10 @@ abstract class LdViewState<S extends LdViewState<S, C>, C extends LdViewControll
     _errorMessage = pErrMsg;
     vCtrl.update([id]);
   }
-  
+
+  Exception? get exception => _exception;
+
+  // Controlador de la vista ----------  
   C get vCtrl {
     if (_vCtrl == null) {
       String msg = "El controlador encara no ha estat assignat a l'estat '$tag'.";
@@ -70,17 +74,6 @@ abstract class LdViewState<S extends LdViewState<S, C>, C extends LdViewControll
   }
   set vCtrl(C pVCtrl) => _vCtrl = pVCtrl;
   
-  // 'GetView' ------------------------
-  @override
-  Widget build(BuildContext pCtx) {
-    return (_vCtrl != null)
-      ? vCtrl.buildView(pCtx)
-      : CircularProgressIndicator(
-          strokeWidth: 2.0.h,
-          backgroundColor: Colors.black,
-        );
-  }
-
   // 'LdDeep' -------------------------
   @override bool get isNew            => (_loadState == LoadState.isNew);
   @override bool get isPreparing      => (_loadState == LoadState.isPreparing);
@@ -93,13 +86,33 @@ abstract class LdViewState<S extends LdViewState<S, C>, C extends LdViewControll
   // Estableix que la càrrega s'està preparant.
   void setPreparing() {
     _loadState = (virgin) ? LoadState.isPreparing : LoadState.isPreparingAgain;
-    vCtrl.update([WidgetKey.appBar.idx, WidgetKey.appBarProgress.idx]);
+    vCtrl.notify(pTgts: [ WidgetKey.appBar.idx, WidgetKey.appBarProgress.idx]);
   }
 
   // Estableix que la càrrega s'està executant.
   void setLoading() {
     _loadState = (virgin) ? LoadState.isLoading : LoadState.isLoadingAgain;
-    vCtrl.update([ WidgetKey.appBar.idx, WidgetKey.appBarProgress.idx ]);
+    vCtrl.notify(pTgts: [ WidgetKey.appBar.idx, WidgetKey.appBarProgress.idx ]);
+  }
+
+// Estableix que la càrrega s'ha completat.
+  void setLoaded(Exception? pExc) {
+    _exception = pExc;
+
+    _loadState = LoadState.isLoaded;
+    virgin = false;
+    vCtrl.notify(); 
+  }
+
+  // Estableix que la càrrega s'ha completat amb error.
+  void setException(
+   String? pError, String? pErrorMessage,
+   Exception pExc) {
+    _exception = pExc;
+    _loadState = LoadState.isError;
+    _errorCode = pError;
+    _errorMessage = pErrorMessage;
+    vCtrl.update();
   }
 
   // Reinicia l'estat original de càrrega.

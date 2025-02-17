@@ -3,20 +3,20 @@
 
 import 'package:get/get.dart';
 import 'package:ld_wbench2/core/ld_id.dart';
+import 'package:ld_wbench2/core/ld_registrable.dart';
 import 'package:ld_wbench2/tools/debug.dart';
 import 'package:ld_wbench2/core/deep_do.dart';
-import 'package:ld_wbench2/tools/li_fo_map.dart';
 
-abstract class LdDeep extends GetView with LdId, DeepDo {
+abstract class LdDeep
+extends DisposableInterface
+with LdId, DeepDo, LdRegistrable {
   // ESTÀTICS -------------------------
-  static final LiFoMap<LdDeep> _views = LiFoMap<LdDeep>();
+  static const className = "LdDeep";
 
   // CONSTRUCTORS ---------------------
-  LdDeep({ String? pTag, super.key }) {
-    tag = pTag ?? "${type}_$id";
-    Debug.debug(DebugLevel.debug_0, "[LdDeep]: Creant vista '$tag'...");
-    _views.push(tag, this);
-    Debug.debug(DebugLevel.debug_0, "[LdDeep]: Vista '$tag' creda.");
+  LdDeep({ String? pTag }) {
+    rtType = className;
+    register(pTag);
+    Debug.debug(DebugLevel.debug_0, "[LdDeep]: DeepDo '$tag' creat.");
   }
-
 }

@@ -4,9 +4,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:ld_wbench2/core/ld_registrable.dart';
 import 'package:ld_wbench2/ld_sabina_application.dart';
 import 'package:ld_wbench2/ld_sabina_controller.dart';
-import 'package:ld_wbench2/core/ld_service.dart';
 import 'package:ld_wbench2/services/services.dart';
 
 void main() async {
@@ -14,10 +14,10 @@ void main() async {
   Get.isLogEnable = kDebugMode;
   
   // ✅ Inicialitzem els serveis de manera asíncrona
-  await LdService.putAsync(() => LdSecureStorageService().init(), pTag: LdSecureStorageService.className);
-  await LdService.putAsync(() => LdDatabaseService().init(), pTag: LdDatabaseService.className);
-  await LdService.putAsync(() => LdNetworkService().init(), pTag: LdNetworkService.className);
-  await LdService.putAsync(() => LdAuthService().init(), pTag: LdAuthService.className);
+  LdSecureStorageService();
+  LdDatabaseService();
+  LdNetworkService();
+  LdAuthService();
   
   runApp(LdSabinaApplication(pSCtrl: LdSabinaController()));
 }

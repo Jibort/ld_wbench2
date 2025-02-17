@@ -9,10 +9,12 @@ class LdAuthService extends LdService {
   static const className = "LdDatabaseService";
 
   // VARIABLES ------------------------
-  late final LdAuthService _auth;
+  // late final LdAuthService _auth;
+
+  // CONSTRUCTORS ---------------------
+  LdAuthService(): super(pTag: className);
 
   Future<LdAuthService> init() async {
-    var _ = _auth;
     return this;
   }
 }

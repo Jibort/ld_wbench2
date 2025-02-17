@@ -7,6 +7,9 @@ class LdDatabaseService extends LdService {
   // ESTÀTICS -------------------------
   static const className = "LdDatabaseService";
 
+  // CONSTRUCTORS ---------------------
+  LdDatabaseService(): super(pTag: className);
+
   Future<LdDatabaseService> init() async {
     return this;
   }

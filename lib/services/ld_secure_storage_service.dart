@@ -7,11 +7,13 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 class LdSecureStorageService extends LdService {
 // ESTÀTICS -------------------------
 static LdSecureStorageService inst = LdSecureStorageService();
-
 static const className = "LdSecureStorageService";
 
-// MEMBRES --------------------------
-final FlutterSecureStorage _storage = const FlutterSecureStorage();
+  // MEMBRES --------------------------
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
+
+// CONSTRUCTORS ---------------------
+  LdSecureStorageService(): super(pTag: className);
 
   Future<LdSecureStorageService> init() async {
     // _storage = const FlutterSecureStorage();

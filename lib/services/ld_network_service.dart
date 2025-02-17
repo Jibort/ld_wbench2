@@ -8,10 +8,12 @@ class LdNetworkService extends LdService {
   static const className = "LdNetworkService";
 
   // VARIABLES ------------------------
-  late final LdNetworkService _network;
+  // late final LdNetworkService _network;
+
+  // CONSTRUCTORS ---------------------
+  LdNetworkService(): super(pTag: className);
 
   Future<LdNetworkService> init() async {
-    var _ = _network;
     return this;
   }
 }
