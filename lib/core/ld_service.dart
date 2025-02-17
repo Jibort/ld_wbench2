@@ -20,6 +20,12 @@ with LdId, LdRegistrable {
     Debug.debug(DebugLevel.debug_0, "[LdService]: Servei '$tag' creat.");
   }
 
+  // REGISTRE ASÍCRON DE SERVEIS ------
+  static Future<T> putAsync<T extends LdService>(Future<T> Function() builder, {required String pTag}) async {
+    final instance = await builder();
+    return LdRegistrable.put<T>(instance, pTag: pTag, pPerm: true);
+  }
+
   // CICLE DE VIDA --------------------
   // Quan el servei ha estat inicialitzat
   @override

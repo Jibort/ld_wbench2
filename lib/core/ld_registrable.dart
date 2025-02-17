@@ -21,31 +21,32 @@ on LdId, DisposableInterface {
     Debug.debug(DebugLevel.debug_3, "[LdRegistrable]: ...Registrat '$tag'");
   }
 
-  // Afegeix una nova instància.
-  static void put(LdRegistrable pInst, { String? pTag }) {
+  // Registra una instància de manera síncrona
+  static T put<T extends LdRegistrable>(T pInst, {String? pTag, bool pPerm = true}) {
     var tag = pTag ?? "${pInst.runtimeType.toString()}_$pInst.id";
     Debug.debug(DebugLevel.debug_3, "[LdRegistrable]: Registrant '$tag'...");
     _map.push(tag, pInst);
-    Get.put(pInst, tag: tag, permanent: true);
+    T ret = Get.put(pInst, tag: pTag, permanent: pPerm);
     Debug.debug(DebugLevel.debug_3, "[LdRegistrable]: ...Registrat '$tag'");
+    return ret;
   }
 
-  // 🔹 Enregistra una instància pel seu `tag`
+  // Retorna la instància enregistrada o nul.
   static T? findOrNull<T extends LdRegistrable>(String pTag) =>
       (_map.find(pTag) as T?)?? (Get.isRegistered<T>(tag: pTag) ? Get.find<T>(tag: pTag) : null);
 
-  // 🔹 Cerca una instància pel seu `tag`
+  // Retorna la instància enregistrat o llança una excepción.
   static T find<T extends LdRegistrable>(String pTag) {
-    final instance = _map.find(pTag)?? (Get.isRegistered<T>(tag: pTag) ? Get.find<T>(tag: pTag) : null);
+    final instance = findOrNull<T>(pTag);
     if (instance == null) {
-      var msg = "El registre '$pTag' no existeix!";
+      var msg = "[LdRegistrable]: '$pTag' no està enregistrat!";
       Debug.fatal(msg, Exception(msg));
     }
     return instance as T;
   }
 
   // 🔹 Elimina un element del registre
-  static void delete(String pTag) {
+  static void delete<T extends LdRegistrable>(String pTag) {
     if (_map.remove(pTag)) {
       Get.delete(tag: pTag, force: true);
       Debug.info("[LdRegistrable]: Eliminat '$pTag'.");
@@ -54,8 +55,8 @@ on LdId, DisposableInterface {
 
   @override
   void onClose() {
+    delete<LdRegistrable>(tag);
     Debug.info("[LdRegistrable]: '$tag' s'està destruint.");
-    delete(tag);
     super.onClose();
   }
 }

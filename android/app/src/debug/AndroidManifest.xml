@@ -4,4 +4,13 @@
          to allow setting breakpoints, to provide hot reload, etc.
     -->
     <uses-permission android:name="android.permission.INTERNET"/>
+
+    <application
+        android:usesCleartextTraffic="true">
+        
+        <!-- 🔹 Força Flutter a utilitzar OpenGL ES 2.0 -->
+        <meta-data android:name="flutter.io.renderer" android:value="opengl" />
+        
+    </application>
+
 </manifest>

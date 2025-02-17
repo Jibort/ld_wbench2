@@ -4,9 +4,12 @@ import 'package:get/get.dart';
 import 'package:ld_wbench2/core/ld_registrable.dart';
 import 'package:ld_wbench2/core/ld_scaffold.dart';
 import 'package:ld_wbench2/core/ld_view.dart';
+import 'package:ld_wbench2/translations/Tr.dart';
 import 'package:ld_wbench2/views/mockup/state.dart';
 
 import 'controller.dart';
+export 'controller.dart';
+export 'state.dart';
 
 class MockupView extends LdView<MockupViewState, MockupViewController> {
   MockupView({super.key}) : super(pState: LdRegistrable.find(Get.parameters[MockupViewState.className]!)) {
@@ -27,7 +30,11 @@ class MockupView extends LdView<MockupViewState, MockupViewController> {
 class MockupViewBindings extends Bindings {
   @override
   void dependencies() {
-    MockupViewState state = MockupViewState(pTag: MockupViewState.className, pTitle: "Mockup View", pSubtitle: "Vista de proves");
+    MockupViewState state = MockupViewState(
+      pTag: MockupViewState.className, 
+      pTitle: Tr.sabinaApp.tr, 
+      pSubtitle: Tr.sabinaWelcome.tr,
+    );
     MockupViewController ctrl = MockupViewController(pState: state);
     state.vCtrl = ctrl;
     Get.parameters[MockupViewState.className] = state.tag;

@@ -2,9 +2,11 @@
 // CreatedAt: 2025/02/13 dj. JIQ
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:ld_wbench2/ld_sabina_controller.dart';
+import 'package:ld_wbench2/translations/Tr.dart';
 import 'package:ld_wbench2/tools/consts/devices.dart';
 import 'package:ld_wbench2/views/app_routes.dart';
 
@@ -33,8 +35,21 @@ class LdSabinaApplication extends StatelessWidget {
           themeMode: _sCtrl.themeMode.value,
           theme: ThemeData.light(),
           darkTheme: ThemeData.dark(),
-          locale: Locale(_sCtrl.currentLocale.value),
+          locale: Get.deviceLocale, // Locale(_sCtrl.currentLocale.value),
           fallbackLocale: Locale('ca'),
+          translations: Tr.inst, // 🔹 Sistema de traducció personalitzat
+          supportedLocales: const [
+            Locale('ca'),
+            Locale('es'),
+            Locale('en'),
+            Locale('fr'),
+            Locale('pt'),
+          ],
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
           initialRoute: AppRoutes.mockup,
           getPages: AppRoutes.pages,
         )
