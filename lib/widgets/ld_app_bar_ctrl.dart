@@ -1,55 +1,76 @@
-// Especialització d'AppBar per a l'aplicació Sabina.
-// CreatedAt: 2025/02/16 dg. GPT[JIQ]
+// Controlador del Widget LdScaffold.
+// CreatedAt: 2025/02/20 dj. JIQ
 
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:flutter/material.dart';
-import 'package:ld_wbench2/core/ld_id.dart';
-import 'package:ld_wbench2/core/ld_view_controller.dart';
+import 'package:ld_wbench2/core/ld_view_ctrl.dart';
+import 'package:ld_wbench2/core/ld_view_state.dart';
+import 'package:ld_wbench2/theme/text_styles.dart';
 import 'package:ld_wbench2/tools/null_mang.dart';
 import 'package:ld_wbench2/views/widget_key.dart';
 import 'package:ld_wbench2/widgets/ld_action_button.dart';
+import 'package:ld_wbench2/widgets/ld_app_bar.dart';
+import 'package:ld_wbench2/widgets/ld_app_bar_state.dart';
+import 'package:ld_wbench2/core/ld_widget_ctrl.dart';
 
-class LdAppBar extends AppBar with LdId {
-  // ESTÀTICS -------------------------
-  static String className = "LdAppBar";
-
+class LdAppBarCtrl<
+  C extends LdAppBarCtrl<C, S, CV, SV>, 
+  S extends LdAppBarState<S, C, SV, CV>,
+  CV extends LdViewCtrl<CV, SV>, 
+  SV extends LdViewState<SV, CV>>
+extends LdWidgetCtrl<C, S> {
+  // MEMBRES --------------------------
+  Widget? _appBar;
+  
   // CONSTRUCTORS ---------------------
-  LdAppBar({
-    super.key,
-    String? pTag,
-    required String title,
-    bool showDrawerIcon = false,
-    bool showBackButton = false,
-    super.actions,
-    required LdViewController pVCtrl,
-  }): super(
-          title: GetBuilder<LdViewController>(
-            init: pVCtrl,
+  LdAppBarCtrl({ required LdViewCtrl<CV, SV> pVCtrl, required super.pState, super.pTag })
+  : super();
+
+  // 'LdWidgetCtrl' -------------------
+  @override
+  Widget buildWidget(BuildContext pCtx) {
+    _appBar ??= PreferredSize(
+      preferredSize: Size.fromHeight(kToolbarHeight + MediaQuery.of(pCtx).padding.top*2), // Size.fromHeight(barHeight),
+      child: AppBar(
+        title: GetBuilder<C>(
+            init: ,
             id: WidgetKey.appBar.idx,
-            builder: (LdViewController pCtrl) {
+            tag: WidgetKey.appBar.idx,
+            builder: (C pCtrl) {
                 return Column(children: [
-                  (pCtrl.vState.isLoaded)
-                      ? _TitleWidget(pCtrl.vState.title, LdActionButton(icon: Icon(Icons.adb_outlined), onPressed: () {  },),
-                          pSubTitle: pCtrl.vState.subtitle,
+                  (pCtrl.state.isLoaded)
+                      ? _TitleWidget(pCtrl.state.title, LdActionButton(icon: Icon(Icons.adb_outlined), onPressed: () {  }, pState: null, pVCtrl: null,),
+                          pSubTitle: pCtrl.state.subtitle,
                           // pFgColor: pFgColor ?? Theme.of(pCxt).primaryColor,
-                          // pActions: pActions
+                          pActions: [],
                         )
                       : _ProgressTitleWidget(
-                          pCxt: Get.context!,
-                          pCtrl,
+                          vCtrl,
+                          pCtrl: pCtrl,
+                          pSubTitle: pCtrl.state.subtitle,
                           pBgColor: Theme.of(Get.context!).scaffoldBackgroundColor,  // pBgColor ?? 
                           pFgColor: Theme.of(Get.context!).primaryColor, // pFgColor ?? 
                         )
                 ]);
               },  
-            )
-      );
+            ),
+      )
+    );
+    return _appBar;
+  }
+
+   @override
+  Widget build(BuildContext pCtx) {
+    return 
+  }
+ 
 }
 
 class _ProgressTitleWidget extends GetWidget {
   // MEMBRES --------------------------
-  final LdViewController _viewCtrl;
+  final LdViewCtrl _viewCtrl;
   final String _title;
   final Color _fgColor;
 
@@ -61,26 +82,27 @@ class _ProgressTitleWidget extends GetWidget {
   // WIDGET ---------------------------
   @override
   Widget build(BuildContext pCxt) {
-    return GetBuilder<LdViewController>(
+    return GetBuilder<LdViewCtrl>(
         id: WidgetKey.appBarProgress.idx,
+        tag: WidgetKey.appBarProgress.idx,
         init: _viewCtrl,
         builder: (context) {
           int length, dids;
           double? ratio;
-          (length, dids, ratio) = _viewCtrl.vState.stats;
-          if (_viewCtrl.vState.isPreparing) {
+          (length, dids, ratio) = _viewCtrl.state.stats;
+          if (_viewCtrl.state.isPreparing) {
             return SizedBox(
               width: null,
-              height: 2.h,
+              height: 2.0.h,
               child: LinearProgressIndicator(
                 borderRadius: const BorderRadius.all(Radius.circular(20)),
-                minHeight: 2.h,
+                minHeight: 2.0.h,
                 backgroundColor: Colors.transparent,
                 valueColor: AlwaysStoppedAnimation<Color>(_fgColor),
                 value: ratio,
               ),
             );
-          } else if (_viewCtrl.vState.isLoading) {
+          } else if (_viewCtrl.state.isLoading) {
             return Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
               Text(
                   "$_title: ${(isNotNull(ratio)) ? "${(ratio! * 100.0).toStringAsFixed(2)}%" : "..."}",
@@ -148,17 +170,17 @@ class _TitleWidget extends GetWidget {
   @override
   Widget build(BuildContext pCxt) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        (isNotNull(_leading)) ? _leading! : const SizedBox(),
+        if (isNotNull(_leading)) ...[ _leading!],
         (isNull(_subTitle))
-            ? Text(_title, style: Get.theme.textTheme.headlineLarge) // txsAppBarMainTitleStyle(pCxt: pCxt, pFgColor: _fgColor))
+            ? Text(_title, style: Get.theme.textTheme.headlineMedium) // txsAppBarMainTitleStyle(pCxt: pCxt, pFgColor: _fgColor))
             : Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(_title, style: Get.theme.textTheme.headlineMedium), // txsAppBarTitleStyle(pCxt: pCxt, pFgColor: _fgColor)),
-                  Text(_subTitle!, style: Get.theme.textTheme.headlineSmall), // txsAppBarSubtitleStyle(pCxt: pCxt, pFgColor: _fgColor))
+                  Text(_title, style: txsAppBarTitleStyle(pFgColor: _fgColor)),
+                  Text(_subTitle!, style: txsAppBarSubtitleStyle(pFgColor: _fgColor))
                 ],
               ),
         (_actions != null)

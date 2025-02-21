@@ -3,8 +3,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:ld_wbench2/core/ld_widget.dart';
+import 'package:ld_wbench2/core/ld_widget_ctrl.dart';
+import 'package:ld_wbench2/core/ld_widget_state.dart';
 
-class LdActionButton extends LdWidget {
+class LdActionButton<
+  S extends LdWidgetState<S, C>, 
+  C extends LdWidgetCtrl<C, S>> 
+extends LdWidget<S, C> {
   // 🔹 Propietats ---------------------------
   final VoidCallback onPressed;
   final Widget icon;
@@ -24,18 +29,20 @@ class LdActionButton extends LdWidget {
     this.backgroundColor,
     this.foregroundColor,
     this.elevation,
-    this.shape,
+    this.shape, 
+    required super.pState, 
+    required super.pVCtrl,
   });
 
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton(
+    return FloatingActionButton.small(
       onPressed: onPressed,
       tooltip: tooltip,
       backgroundColor: backgroundColor ?? Theme.of(context).primaryColor,
       foregroundColor: foregroundColor ?? Colors.white,
       elevation: elevation ?? 6.0,
-      shape: shape ?? const CircleBorder(),
+      shape: shape ?? const BeveledRectangleBorder(), // CircleBorder(),
       child: icon,
     );
   }

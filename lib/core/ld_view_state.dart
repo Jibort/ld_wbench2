@@ -1,15 +1,16 @@
 // Classe base dels estats de vistes de l'aplicació.
 // CreatedAt: 2025/02/15 ds. JIQ
 
-import 'package:ld_wbench2/core/deep_do.dart';
-import 'package:ld_wbench2/core/ld_deep.dart';
-import 'package:ld_wbench2/core/ld_view_controller.dart';
+import 'package:ld_wbench2/core/ld_state.dart';
+import 'package:ld_wbench2/core/ld_view_ctrl.dart';
 import 'package:ld_wbench2/tools/debug.dart';
 import 'package:ld_wbench2/views/widget_key.dart';
 
 
-abstract class LdViewState<S extends LdViewState<S, C>, C extends LdViewController<C, S>>
-extends LdDeep {
+abstract class LdViewState<
+  S extends LdViewState<S, C>,
+  C extends LdViewCtrl<C, S>>
+extends LdState<S, C> {
   // MEMBRES --------------------------
   LoadState _loadState = LoadState.isNew;
   bool virgin = true;
@@ -51,7 +52,7 @@ extends LdDeep {
   String? get message => _message;
   set message(String? pMessage) { 
     _message = pMessage;
-    vCtrl.update([id]);
+    vCtrl.notify(pTgts: [ tag ]);
   }
   
   String? get errorCode => _errorCode;
@@ -59,7 +60,7 @@ extends LdDeep {
   setError(String? pErrCode, String? pErrMsg) { 
     _errorCode = pErrCode;
     _errorMessage = pErrMsg;
-    vCtrl.update([id]);
+    vCtrl.notify(pTgts: [ tag ]);
   }
 
   Exception? get exception => _exception;
@@ -73,7 +74,7 @@ extends LdDeep {
     return _vCtrl!;
   }
   set vCtrl(C pVCtrl) => _vCtrl = pVCtrl;
-  
+
   // 'LdDeep' -------------------------
   @override bool get isNew            => (_loadState == LoadState.isNew);
   @override bool get isPreparing      => (_loadState == LoadState.isPreparing);
@@ -86,13 +87,13 @@ extends LdDeep {
   // Estableix que la càrrega s'està preparant.
   void setPreparing() {
     _loadState = (virgin) ? LoadState.isPreparing : LoadState.isPreparingAgain;
-    vCtrl.notify(pTgts: [ WidgetKey.appBar.idx, WidgetKey.appBarProgress.idx]);
+    vCtrl.notify(pTgts: [ WidgetKey.scaffold.idx, WidgetKey.pageBody.idx, WidgetKey.appBar.idx, WidgetKey.appBarProgress.idx]);
   }
 
   // Estableix que la càrrega s'està executant.
   void setLoading() {
     _loadState = (virgin) ? LoadState.isLoading : LoadState.isLoadingAgain;
-    vCtrl.notify(pTgts: [ WidgetKey.appBar.idx, WidgetKey.appBarProgress.idx ]);
+    vCtrl.notify(pTgts: [ WidgetKey.pageBody.idx, WidgetKey.appBar.idx, WidgetKey.appBarProgress.idx ]);
   }
 
 // Estableix que la càrrega s'ha completat.
@@ -112,7 +113,7 @@ extends LdDeep {
     _loadState = LoadState.isError;
     _errorCode = pError;
     _errorMessage = pErrorMessage;
-    vCtrl.update();
+    vCtrl.notify();
   }
 
   // Reinicia l'estat original de càrrega.
@@ -121,9 +122,11 @@ extends LdDeep {
     _loadState = LoadState.isNew;
     virgin = true;
     loadData();
-    vCtrl.update();
+    vCtrl.notify(pTgts: [tag]);
   }
 
-  // Càrrega asíncrona de les dades de la vista.
-  void loadData();
+  @override
+  void $configureLifeCycle() {
+    vCtrl.$configureLifeCycle();
+  }
 }

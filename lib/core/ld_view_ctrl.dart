@@ -2,22 +2,19 @@
 // CreatedAt: 2025/02/15 ds. JIQ
 
 import 'package:flutter/widgets.dart';
-import 'package:ld_wbench2/core/ld_controller.dart';
+import 'package:ld_wbench2/core/ld_ctrl.dart';
 import 'package:ld_wbench2/core/ld_view_state.dart';
 import 'package:ld_wbench2/tools/debug.dart';
 
-abstract class LdViewController<C extends LdViewController<C, S>, S extends LdViewState<S, C>> 
-extends LdController {
+abstract class LdViewCtrl<
+  C extends LdViewCtrl<C, S>, 
+  S extends LdViewState<S, C>> 
+extends LdCtrl<C, S> {
   // MEMBRES --------------------------
   final List<String> wgIds = <String>[];
-  final S _vState;
 
   // CONSTRUCTORS ---------------------
-  LdViewController({ required S pState, super.pTag })
-  : _vState = pState;
-
-  // GETTERS/SETTERS ------------------
-  S get vState => _vState;
+  LdViewCtrl({ required super.pState, super.pTag });
 
   // GESTIÓ DE WIDGETS ----------------
   void addWidgets(List<String> pWgIds) {
@@ -41,7 +38,7 @@ extends LdController {
 
   // 
   void resetState() {
-    vState.dataReset();
+    state.dataReset();
   }
 
   // 'GetxController' -----------------
@@ -49,7 +46,7 @@ extends LdController {
   @override
   void onReady() {
     super.onReady();
-    vState.loadData();
+    state.loadData();
     Debug.debug(DebugLevel.debug_1, "[onReady]: La interfície gràfica del controlador ${runtimeType.toString()} està completament carregada.");
   }
 

@@ -1,24 +1,17 @@
-// Gestor de tasques seqüencials pro-await.
-// CreatedAt: 25/02/15 ds. JIQ
+// Classe per a la generalització de l'estat d'una vista de l'aplicació.
+// CreatedAt: 2025/02/19 dc. JIQ
 
+// Estats de la càrrega de dades per a la pàgina.
 import 'package:flutter/foundation.dart';
-import 'package:ld_wbench2/core/ld_view_controller.dart';
+import 'package:ld_wbench2/core/ld_ctrl.dart';
+import 'package:ld_wbench2/core/ld_registrable_id.dart';
+import 'package:ld_wbench2/core/ld_view_ctrl.dart';
 import 'package:ld_wbench2/tools/debug.dart';
 import 'package:ld_wbench2/tools/fi_fo.dart';
 import 'package:ld_wbench2/tools/load_steps.dart';
 import 'package:ld_wbench2/tools/null_mang.dart';
 
-// Definició de tipus -----------------
-// Funció per a la gestió de les excepcions dins un FnStep.
-// Retorna una possible excepció i un booleà que determina si s'ha de continuar
-// executant la llista de passes.
-typedef FnExc = Future<(Exception?, bool)> Function(Exception? pExc);
-typedef FnStep = Future<Exception?> Function(FiFo pQueue, List<dynamic> pArgs);
-typedef FnThen = Exception? Function(FiFo pQueue);
-Symbol empty = const Symbol("null");
-typedef FnPair = (FnStep, dynamic);
-
-// Estats de la càrrega de dades per a la pàgina.
+// Declaració de possibles estats d'un LdState.
 enum LoadState {
   isNew,
   isPreparing,
@@ -29,13 +22,29 @@ enum LoadState {
   isError,
 }
 
-// Mixin gestor de tasques seqüencials pro-await.
-mixin DeepDo {
+// DEFINICIONS DE FUNCIONS TIPUS ------
+typedef FnExc = Future<(Exception?, bool)> Function(Exception? pExc);
+typedef FnStep = Future<Exception?> Function(FiFo pQueue, List<dynamic> pArgs);
+typedef FnThen = Exception? Function(FiFo pQueue);
+
+abstract class LdState<
+  S extends LdState<S, C>, 
+  C extends LdCtrl<C, S>>
+with LdRegistrableId {
+  // ESTÀTICS -------------------------
+  static const className = "LdState";
+
   // MEMBRES --------------------------
   Function(FiFo pQueue)? _onAltered;
   final _queue = FiFo();
   int _length = 0;
   int _dids = 0;
+
+  // CONSTRUCTORS ---------------------
+  LdState({ String? pTag }) {
+    register(pTag);
+    Debug.debug(DebugLevel.debug_0, "[LdState]: ...estat '$tag' creat.");
+  }
 
   // GETTERS i SETTERS ----------------
   FiFo get queue => _queue;
@@ -54,6 +63,9 @@ mixin DeepDo {
   (int, int, double?) get stats => (length, dids, ratio);
   set onAltered(Function(FiFo pQueue)? pOnAltered) => _onAltered = pOnAltered;
 
+  // FUNCIONS ABSTRACTES --------------
+  void loadData();
+  
   // GESTIÓ DE PASOS ------------------
   // Afegeix un pas a la pila de pasos.
   void addFn(FnStep pStep,
@@ -75,7 +87,7 @@ mixin DeepDo {
 
   // Afegeix un pas a la pila de pasos que s'executarà immediatament si
   // la pàgina està carregada.
-  Future<void> addFnNow(LdViewController pCtrl, FnStep pStep,
+  Future<void> addFnNow(LdViewCtrl pCtrl, FnStep pStep,
       {List<dynamic>? pArgs, FnThen? pThen, FnExc? pOnExc, LoadStep? pLoadStep}) async {
     addFn(pStep, pArgs: pArgs, pThen: pThen, pOnExc: pOnExc, pLoadStep: pLoadStep);
     if (isLoaded) await runSteps();

@@ -1,8 +1,6 @@
 
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:ld_wbench2/core/ld_registrable.dart';
-import 'package:ld_wbench2/core/ld_scaffold.dart';
+import 'package:ld_wbench2/core/ld_registrable_id.dart';
 import 'package:ld_wbench2/core/ld_view.dart';
 import 'package:ld_wbench2/translations/Tr.dart';
 import 'package:ld_wbench2/views/mockup/state.dart';
@@ -11,32 +9,29 @@ import 'controller.dart';
 export 'controller.dart';
 export 'state.dart';
 
-class MockupView extends LdView<MockupViewState, MockupViewController> {
-  MockupView({super.key}) : super(pState: LdRegistrable.find(Get.parameters[MockupViewState.className]!)) {
+class MockupView<
+  S extends MockupViewState<S, C>, 
+  C extends MockupViewCtrl<C, S>>
+extends LdView<S, C> {
+  MockupView({super.key})
+  : super(pState: LdRegistrableId.find(Get.parameters[MockupViewState.className]!)) {
     Get.parameters.remove(MockupViewState.className);
-  }
-
-  @override
-  Widget build(BuildContext pCtx) {
-    return LdScaffold(
-      pVCtrl: ctrl,
-      // appBar: LdAppBar(title: "Vista Mockup", pVCtrl: ctrl),
-      pBody: ctrl.buildView(pCtx),
-
-    );
   }
 }
 
-class MockupViewBindings extends Bindings {
+class MockupViewBindings<
+  S extends MockupViewState<S, C>, 
+  C extends MockupViewCtrl<C, S>>
+extends Bindings {
   @override
   void dependencies() {
-    MockupViewState state = MockupViewState(
+    MockupViewState<S, C> state = MockupViewState<S, C>(
       pTag: MockupViewState.className, 
       pTitle: Tr.sabinaApp.tr, 
       pSubtitle: Tr.sabinaWelcome.tr,
     );
-    MockupViewController ctrl = MockupViewController(pState: state);
-    state.vCtrl = ctrl;
+    MockupViewCtrl<C, S> ctrl = MockupViewCtrl<C, S>(pState: state as S);
+    state.vCtrl = ctrl as C;
     Get.parameters[MockupViewState.className] = state.tag;
   }
 }
