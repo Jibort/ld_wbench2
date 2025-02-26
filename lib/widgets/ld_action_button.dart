@@ -3,13 +3,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:ld_wbench2/core/ld_widget.dart';
-import 'package:ld_wbench2/core/ld_widget_ctrl.dart';
-import 'package:ld_wbench2/core/ld_widget_state.dart';
 
-class LdActionButton<
-  S extends LdWidgetState<S, C>, 
-  C extends LdWidgetCtrl<C, S>> 
-extends LdWidget<S, C> {
+class LdActionButton
+extends LdWidget {
+  static final String className = "LdActionButton";
+
   // 🔹 Propietats ---------------------------
   final VoidCallback onPressed;
   final Widget icon;
@@ -22,7 +20,7 @@ extends LdWidget<S, C> {
   // 🔹 Constructor ---------------------------
   LdActionButton({
     super.key, 
-    super.pTag,
+
     required this.onPressed,
     required this.icon,
     this.tooltip,

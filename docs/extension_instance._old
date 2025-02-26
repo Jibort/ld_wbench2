@@ -1,0 +1,309 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+
+import '../../get_core/get_core.dart';
+import '../../get_navigation/src/router_report.dart';
+
+// Remove dir from workspace.
+// rmdir /S getx
+// git clone https://github.com/jonataslaw/getx.git
+
+class InstanceInfo {
+  final bool? isPermanent;
+  final bool? isSingleton;
+  bool get isCreate => !isSingleton!;
+  final bool isRegistered;
+  final bool isPrepared;
+  final bool? isInit;
+  const InstanceInfo({
+    required this.isPermanent,
+    required this.isSingleton,
+    required this.isRegistered,
+    required this.isPrepared,
+    required this.isInit,
+  });
+
+  @override
+  String toString() {
+    return 'InstanceInfo(isPermanent: $isPermanent, isSingleton: $isSingleton, isRegistered: $isRegistered, isPrepared: $isPrepared, isInit: $isInit)';
+  }
+}
+
+extension ResetInstance on GetInterface {
+  /// Clears all registered instances (and/or tags).
+  /// Even the persistent ones.
+  /// This should be used at the end or tearDown of unit tests.
+  ///
+  /// `clearFactory` clears the callbacks registered by [lazyPut]
+  /// `clearRouteBindings` clears Instances associated with routes.
+  ///
+  bool resetInstance({bool clearRouteBindings = true}) {
+    //  if (clearFactory) _factory.clear();
+    // deleteAll(force: true);
+    if (clearRouteBindings) RouterReportManager.instance.clearRouteKeys();
+    Inst._singl.clear();
+
+    return true;
+  }
+}
+
+// JAB: // GPT: Extensió adaptada per tal que assegurem el retorn de qualsevol instància 
+//              enregitrada amb 'put()'.
+extension Inst on GetInterface {
+  /// Mapa persistent per emmagatzemar instàncies registrades amb put()
+  static final Map<String, dynamic> _instanceMap = {};
+
+  /// Mapa intern de GetX que gestiona els singletons i factories
+  static final Map<String, _InstanceBuilderFactory> _singl = {};
+
+  /// Genera una clau única basada en el tipus i el tag (si existeix)
+  String _getKey(Type type, String? name) {
+    return name == null ? type.toString() : '${type.toString()}$name';
+  }
+
+  /// Registra i desa la instància persistentment amb put()
+  S put<S>(
+    S dependency, {
+    String? tag,
+    bool permanent = false,
+  }) {
+    final key = _getKey(S, tag);
+
+    // Desa la instància al mapa persistent
+    _instanceMap[key] = dependency;
+
+    // Manté el registre a GetX internament
+    _insert(
+      isSingleton: true,
+      name: tag,
+      permanent: permanent,
+      builder: (() => dependency),
+    );
+
+    return find<S>(tag: tag); // Retorna la instància acabada de registrar
+  }
+
+  /// Recupera la instància si existeix. Prioritza el mapa persistent.
+  S find<S>({String? tag}) {
+    final key = _getKey(S, tag);
+
+    // 1️⃣ Consulta primer el mapa persistent
+    if (_instanceMap.containsKey(key)) {
+      return _instanceMap[key] as S;
+    }
+
+    // 2️⃣ Consulta al mapa intern de GetX si no s'ha trobat abans
+    if (isRegistered<S>(tag: tag)) {
+      final instance = _initDependencies<S>(name: tag);
+      return instance ?? _singl[key]!.getDependency() as S;
+    }
+
+    // 3️⃣ Si no es troba, llença una excepció informativa
+    throw '"$S" no trobat. Has de cridar "put()" abans de "find()".';
+  }
+
+  /// Registra una instància de forma mandrosa (lazy) i la desa al mapa persistent
+  void lazyPut<S>(
+    InstanceBuilderCallback<S> builder, {
+    String? tag,
+    bool? fenix,
+    bool permanent = false,
+  }) {
+    final key = _getKey(S, tag);
+
+    // Desa la instància quan sigui creada (lazy initialization)
+    _insert(
+      isSingleton: true,
+      name: tag,
+      permanent: permanent,
+      builder: () {
+        final instance = builder();
+        _instanceMap[key] = instance; // Desa la instància creada al mapa
+        return instance;
+      },
+      fenix: fenix ?? Get.smartManagement == SmartManagement.keepFactory,
+    );
+  }
+
+  /// Elimina la instància del mapa persistent i del registre intern de GetX
+  bool delete<S>({String? tag, String? key, bool force = false}) {
+    final newKey = key ?? _getKey(S, tag);
+
+    if (!_singl.containsKey(newKey)) return false;
+
+    _instanceMap.remove(newKey); // Neteja la referència persistent
+    _singl.remove(newKey); // Neteja del registre intern
+
+    Get.log('"$newKey" eliminat correctament.');
+    return true;
+  }
+
+  /// Elimina totes les instàncies dels mapes i la memòria
+  void deleteAll({bool force = false}) {
+    _instanceMap.clear(); // Neteja el mapa persistent
+    _singl.clear(); // Neteja el mapa intern
+    Get.log('Totes les instàncies han estat eliminades.');
+  }
+
+  /// Reinicia la instància existent si està registrada i no és permanent
+  void reload<S>({String? tag, String? key, bool force = false}) {
+    final newKey = key ?? _getKey(S, tag);
+
+    if (!_singl.containsKey(newKey)) return;
+
+    final instance = _singl[newKey];
+    if (instance == null) return;
+
+    if (instance.permanent && !force) {
+      Get.log('"$newKey" és permanent. Usa force = true per reiniciar.');
+      return;
+    }
+
+    _instanceMap.remove(newKey); // Neteja la instància persistent
+    instance.dependency = null;
+    instance.isInit = false;
+
+    Get.log('"$newKey" reiniciat correctament.');
+  }
+
+  /// Comprova si una instància està registrada
+  bool isRegistered<S>({String? tag}) {
+    return _singl.containsKey(_getKey(S, tag));
+  }
+
+  /// Comprova si una instància està preparada però no inicialitzada
+  bool isPrepared<S>({String? tag}) {
+    final builder = _singl[_getKey(S, tag)];
+    return builder != null && !builder.isInit;
+  }
+
+  /// Reinicia totes les instàncies registrades
+  void reloadAll({bool force = false}) {
+    _singl.forEach((key, value) {
+      if (!value.permanent || force) {
+        _instanceMap.remove(key); // Neteja el mapa persistent
+        value.dependency = null;
+        value.isInit = false;
+        Get.log('"$key" reiniciat.');
+      } else {
+        Get.log('"$key" és permanent. S\'omet el reinici.');
+      }
+    });
+  }
+
+  /// Funció interna per inserir instàncies al registre de GetX
+  void _insert<S>({
+    required bool isSingleton,
+    required String? name,
+    required bool permanent,
+    required InstanceBuilderCallback<S> builder,
+    bool fenix = false,
+  }) {
+    final key = _getKey(S, name);
+
+    _InstanceBuilderFactory<S>? dep;
+    if (_singl.containsKey(key)) {
+      final newDep = _singl[key];
+      if (newDep == null || !newDep.isDirty) {
+        return;
+      } else {
+        dep = newDep as _InstanceBuilderFactory<S>;
+      }
+    }
+
+    _singl[key] = _InstanceBuilderFactory<S>(
+      isSingleton: isSingleton,
+      builderFunc: builder,
+      permanent: permanent,
+      isInit: false,
+      fenix: fenix, 
+      tag: name,
+      lateRemove: dep,
+    );
+  }
+
+  /// Inicialitza les dependències d'una instància (només per ús intern)
+  S? _initDependencies<S>({String? name}) {
+    final key = _getKey(S, name);
+
+    final builder = _singl[key];
+    if (builder == null) return null;
+
+    if (!builder.isInit) {
+      builder.isInit = true;
+      final instance = builder.getDependency() as S;
+
+      if (builder.isSingleton?? false) {
+        _instanceMap[key] = instance; // Desa la instància inicialitzada
+      }
+
+      return instance;
+    }
+
+    return builder.getDependency() as S;
+  }
+}
+
+typedef AsyncInstanceBuilderCallback<S> = Future<S> Function();
+
+/// Internal class to register instances with `Get.put<S>()`.
+class _InstanceBuilderFactory<S> {
+  /// Marks the Builder as a single instance.
+  /// For reusing [dependency] instead of [builderFunc]
+  bool? isSingleton;
+
+  /// When fenix mode is available, when a new instance is need
+  /// Instance manager will recreate a new instance of S
+  bool fenix;
+
+  /// Stores the actual object instance when [isSingleton]=true.
+  S? dependency;
+
+  /// Generates (and regenerates) the instance when [isSingleton]=false.
+  /// Usually used by factory methods
+  InstanceBuilderCallback<S> builderFunc;
+
+  /// Flag to persist the instance in memory,
+  /// without considering `Get.smartManagement`
+  bool permanent = false;
+
+  bool isInit = false;
+
+  _InstanceBuilderFactory<S>? lateRemove;
+
+  bool isDirty = false;
+
+  String? tag;
+
+  _InstanceBuilderFactory({
+    required this.isSingleton,
+    required this.builderFunc,
+    required this.permanent,
+    required this.isInit,
+    required this.fenix,
+    required this.tag,
+    required this.lateRemove,
+  });
+
+  void _showInitLog() {
+    if (tag == null) {
+      Get.log('Instance "$S" has been created');
+    } else {
+      Get.log('Instance "$S" has been created with tag "$tag"');
+    }
+  }
+
+  /// Gets the actual instance by it's [builderFunc] or the persisted instance.
+  S getDependency() {
+    if (isSingleton!) {
+      if (dependency == null) {
+        _showInitLog();
+        dependency = builderFunc();
+      }
+      return dependency!;
+    } else {
+      return builderFunc();
+    }
+  }
+}

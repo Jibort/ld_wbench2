@@ -1,34 +1,29 @@
 // Classe embolcall per a tots els serveis de l'aplicació.
 // CreatedAt: 2025/02/12 dc. JIQ
 
+import 'package:ld_wbench2/core/ld_id_mixin.dart';
 import 'package:get/get.dart';
-import 'package:ld_wbench2/core/ld_registrable_id.dart';
 import 'package:ld_wbench2/tools/debug.dart';
 
 abstract class LdService
 extends GetxService
-with LdRegistrableId { 
-  // ESTÀTICS -------------------------
+with LdIdMixin { 
+  // 📝 ESTÀTICS -----------------------
   static const className = "LdService";
 
-  // CONSTRUCTORS ---------------------
+  // 🛠️ CONSTRUCTORS -------------------
   LdService({ String? pTag }) {
-    register(pTag);
+    tag = pTag?? "${className}_$id";
+    Get.put(this, tag: tag, permanent: true);
     Debug.debug(DebugLevel.debug_0, "[LdService]: Servei '$tag' creat.");
   }
 
-  // REGISTRE ASÍCRON DE SERVEIS ------
-  static Future<T> putAsync<T extends LdService>(Future<T> Function() builder, {required String pTag}) async {
-    final instance = await builder();
-    return LdRegistrableId.put<T>(instance, pTag: pTag, pPerm: true);
-  }
-
-  // CICLE DE VIDA --------------------
+  // 🔄 CICLE DE VIDA ------------------
   // Quan el servei ha estat inicialitzat
   @override
   void onInit() {
     super.onInit();
-    Debug.debug(DebugLevel.debug_1, "[onInit]: El servei '$type(tag: $tag)' ha estat inicialitzat.");
+    Debug.debug(DebugLevel.debug_1, "[onInit]: El servei '$typeName(tag: $tag)' ha estat inicialitzat.");
   }
 
   // Quan el servei està completament carregat

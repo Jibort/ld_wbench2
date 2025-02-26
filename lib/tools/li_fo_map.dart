@@ -33,13 +33,10 @@ class LiFoMap<T> {
     return null;
   }
 
-  bool remove(String key) {
-    if (_map.containsKey(key)) {
-      T? item = _map.remove(key);
-      if (item != null) { _list.remove(item); }
-      return true;
-    }
-    return false;
+  bool remove(String pTag) {
+    return (contains(pTag))
+      ? (_map.remove(pTag) != null)
+      : false;
   }
 
   void clear() {
@@ -48,4 +45,6 @@ class LiFoMap<T> {
   }
 
   T? find(String key) => _map[key];
+
+  bool contains(String pTag) => _map.containsKey(pTag);
 }

@@ -3,42 +3,36 @@
 
 import 'package:ld_wbench2/core/ld_state.dart';
 import 'package:ld_wbench2/core/ld_view_ctrl.dart';
-import 'package:ld_wbench2/tools/debug.dart';
 import 'package:ld_wbench2/views/widget_key.dart';
 
 
-abstract class LdViewState<
-  S extends LdViewState<S, C>,
-  C extends LdViewCtrl<C, S>>
-extends LdState<S, C> {
+abstract class LdViewState
+extends LdState {
   // MEMBRES --------------------------
   LoadState _loadState = LoadState.isNew;
   bool virgin = true;
-  C? _vCtrl;
 
   String _title;
   String? _subtitle;
   String? _message;
-  String? _errorCode;
-  String? _errorMessage;
-  Exception? _exception;
+  // String? _errorCode;
+  // String? _errorMessage;
+  // Exception? _exception;
 
   // CONSTRUCTORS ---------------------
   LdViewState({ 
-    required super.pTag,
     required String pTitle, 
     String? pSubtitle, 
     String? pMessage,
-    String? pErrCode,
-    String? pErrMsg,
-    Exception? pException, 
-  }): 
+    // String? pErrCode,
+    // String? pErrMsg,
+    super.pErrorCode,
+    super.pErrorMessage,
+    super.pException, 
+   }): 
     _title = pTitle,
     _subtitle = pSubtitle,
-    _message = pMessage, 
-    _errorCode = pErrCode, 
-    _errorMessage = pErrMsg,
-    _exception = pException;
+    _message = pMessage;
 
   // GETTERS/SETTERS ------------------
   String  get title => _title;
@@ -46,43 +40,36 @@ extends LdState<S, C> {
   void setTitles(String pTitle, String? pSubtitle) { 
     _title = pTitle;
     _subtitle = pSubtitle;
-    vCtrl.update([id]);
+    vCtrl.notify(pTgts: [ vCtrl.tag ]);
   }
   
   String? get message => _message;
   set message(String? pMessage) { 
     _message = pMessage;
-    vCtrl.notify(pTgts: [ tag ]);
+    vCtrl.notify(pTgts: [ vCtrl.tag ]);
   }
   
-  String? get errorCode => _errorCode;
-  String? get errorMessage => _errorMessage;
-  setError(String? pErrCode, String? pErrMsg) { 
-    _errorCode = pErrCode;
-    _errorMessage = pErrMsg;
-    vCtrl.notify(pTgts: [ tag ]);
-  }
+  // String? get errorCode => _errorCode;
+  // String? get errorMessage => _errorMessage;
+  // setError(String? pErrCode, String? pErrMsg) { 
+  //   _errorCode = pErrCode;
+  //   _errorMessage = pErrMsg;
+  //   vCtrl.notify(pTgts: [ vCtrl.tag ]);
+  // }
 
-  Exception? get exception => _exception;
+  // Exception? get exception => _exception;
 
   // Controlador de la vista ----------  
-  C get vCtrl {
-    if (_vCtrl == null) {
-      String msg = "El controlador encara no ha estat assignat a l'estat '$tag'.";
-      Debug.fatal(msg, Exception(msg));
-    }
-    return _vCtrl!;
-  }
-  set vCtrl(C pVCtrl) => _vCtrl = pVCtrl;
+  LdViewCtrl get vCtrl => super.ctrl as LdViewCtrl;
+  set vCtrl(LdViewCtrl pVCtrl) => super.ctrl = pVCtrl;
 
-  // 'LdDeep' -------------------------
+  // 'LdState' ------------------------
   @override bool get isNew            => (_loadState == LoadState.isNew);
   @override bool get isPreparing      => (_loadState == LoadState.isPreparing);
   @override bool get isLoading        => (_loadState == LoadState.isLoading);
   @override bool get isLoaded         => (_loadState == LoadState.isLoaded);
   @override bool get isPreparingAgain => (_loadState == LoadState.isPreparingAgain);
   @override bool get isLoadingAgain   => (_loadState == LoadState.isLoadingAgain);
-  @override bool get isError          => (_errorCode != null);
 
   // Estableix que la càrrega s'està preparant.
   void setPreparing() {
@@ -98,7 +85,7 @@ extends LdState<S, C> {
 
 // Estableix que la càrrega s'ha completat.
   void setLoaded(Exception? pExc) {
-    _exception = pExc;
+    exception = pExc;
 
     _loadState = LoadState.isLoaded;
     virgin = false;
@@ -109,24 +96,19 @@ extends LdState<S, C> {
   void setException(
    String? pError, String? pErrorMessage,
    Exception pExc) {
-    _exception = pExc;
+    exception = pExc;
     _loadState = LoadState.isError;
-    _errorCode = pError;
-    _errorMessage = pErrorMessage;
+    setError(pError, pErrorMessage);
     vCtrl.notify();
   }
 
   // Reinicia l'estat original de càrrega.
-  void dataReset() {
-    super.reset();
-    _loadState = LoadState.isNew;
-    virgin = true;
-    loadData();
-    vCtrl.notify(pTgts: [tag]);
-  }
-
-  @override
-  void $configureLifeCycle() {
-    vCtrl.$configureLifeCycle();
-  }
+    @override
+    void reset() {
+      super.reset();
+      _loadState = LoadState.isNew;
+      virgin = true;
+      loadData();
+      vCtrl.notify(pTgts: [ ctrl.tag ]);
+    }
 }

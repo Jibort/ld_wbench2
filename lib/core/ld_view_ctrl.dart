@@ -3,13 +3,11 @@
 
 import 'package:flutter/widgets.dart';
 import 'package:ld_wbench2/core/ld_ctrl.dart';
-import 'package:ld_wbench2/core/ld_view_state.dart';
 import 'package:ld_wbench2/tools/debug.dart';
 
-abstract class LdViewCtrl<
-  C extends LdViewCtrl<C, S>, 
-  S extends LdViewState<S, C>> 
-extends LdCtrl<C, S> {
+abstract class LdViewCtrl
+extends LdCtrl {
+
   // MEMBRES --------------------------
   final List<String> wgIds = <String>[];
 
@@ -27,18 +25,8 @@ extends LdCtrl<C, S> {
     }
   }
 
-  void notify({List<String>? pTgts}) {
-    Debug.debug(DebugLevel.debug_4, "${runtimeType.toString()}.notify(): Notificants Widgets...");
-    List<String> tgts = pTgts ?? wgIds;
-    for (var wgId in tgts) {
-      update([wgId], true);
-    }
-    Debug.debug(DebugLevel.debug_4, "${runtimeType.toString()}.notify(): ...Widgets notificats.");
-  }
-
-  // 
   void resetState() {
-    state.dataReset();
+    state.reset();
   }
 
   // 'GetxController' -----------------
@@ -52,4 +40,13 @@ extends LdCtrl<C, S> {
 
   // FUNCIONS ABSTRACTES --------------
   Widget buildView(BuildContext pCtx);
+
+  // Updates controlats.
+  @override
+  void notify({List<String>? pTgts}) {
+    Debug.debug(DebugLevel.debug_4, "${runtimeType.toString()}.notify(): Notificants Widgets...");
+    List<String> tgts = pTgts ?? wgIds;
+    super.notify(pTgts: tgts);
+    Debug.debug(DebugLevel.debug_4, "${runtimeType.toString()}.notify(): ...Widgets notificats.");
+  }
 }

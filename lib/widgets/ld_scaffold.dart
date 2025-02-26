@@ -3,17 +3,15 @@
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:ld_wbench2/core/ld_view_state.dart';
 import 'package:ld_wbench2/widgets/ld_app_bar.dart';
 import 'package:ld_wbench2/core/ld_widget.dart';
 import 'package:ld_wbench2/core/ld_widget_ctrl.dart';
 import 'package:ld_wbench2/core/ld_widget_state.dart';
 import 'package:ld_wbench2/views/widget_key.dart';
 
-class LdScaffold<
-  S extends LdWidgetState<S, C>, 
-  C extends LdWidgetCtrl<C, S>>
-extends LdWidget<S, C> {
+class LdScaffold
+extends LdWidget {
   // ESTÀTICS -------------------------
   static const className = "LdScaffold";
 
@@ -41,15 +39,11 @@ extends LdWidget<S, C> {
   final bool endDrawerEnableOpenDragGesture;             // Permet obrir l'endDrawer amb gestos
   final String? restorationId;   
 
-  // MEMBRES PROPIS -------------------
-  String _title;
-  String? _subtitle;
-  late LdAppBar _appBar; 
-
   // CONSTRUCTORS ---------------------
   LdScaffold({
     super.key,
     String? pTag,
+    required LdViewState pViewState,
     required String pTitle,
     String? pSubtitle,
     this.btnFloatAction,                        
@@ -75,47 +69,99 @@ extends LdWidget<S, C> {
     this.endDrawerEnableOpenDragGesture = true,             
     this.restorationId,             
   }) 
-  : _title = pTitle, _subtitle = pSubtitle, 
-    super(pVCtrl: LdScaffold
-      pTag: pTag?? WidgetKey.scaffold.idx, 
-      pState: LdScaffoldState(key: key));
+  : super(
+      pVCtrl: pViewState.vCtrl,
+      pState: LdScaffoldState(
+        pTag: pTag?? WidgetKey.scaffold.idx, 
+        pTitle: pTitle, 
+        pSubtitle: pSubtitle,
+        pVCtrl: pViewState.vCtrl,
+        pLabel: className
+      ));
+}
 
-     pTag: pTag?? WidgetKey.scaffold.idx, 
-     pState: LdScaffoldState(key: key, pTag)
-  ) {
-    _appBar = LdAppBar()
+class LdScaffoldState
+extends LdWidgetState {
+  // MEMBRES --------------------------
+  String _title;
+  String? _subtitle;
+
+  // GETTERS/SETTERS ------------------
+  String get title => _title;
+  String? get subtitle => _subtitle;
+  void setTitles({required String pTitle, String? pSubtitle}) {
+    _title = pTitle;
+    _subtitle = pSubtitle;
+    ctrl.notify(pTgts: [ ctrl.tag ]);    
   }
-  
-  // 'DisposableInterface' ------------
+
+  // CONSTRUCTORS ---------------------
+  LdScaffoldState({
+    required String pTitle, 
+    String? pSubtitle, 
+    required super.pTag, 
+    required super.pVCtrl, 
+    required super.pLabel, 
+  }): 
+    _title = pTitle,
+    _subtitle = pSubtitle;
+
   @override
-  // TODO: implement initialized
-  bool get initialized => throw UnimplementedError();
-  
+  void loadData() { }  
+}
+
+class LdScaffoldCtrl
+extends LdWidgetCtrl {
+  // MEMBRES --------------------------
+  LdAppBar? _appBar;
+
+  // CONSTRUCTORS ---------------------
+  LdScaffoldCtrl({super.pTag, required super.pVCtrl, required String pTitle, String? pSubtitle })
+  : super(pState: LdScaffoldState(
+      
+      pLabel: "LdScaffoldState", 
+      pTitle: pTitle, pSubtitle: pSubtitle, 
+      pVCtrl: pVCtrl, pTag: pTag));
+
+  // GETTERS/SETTERS ------------------
   @override
-  // TODO: implement isClosed
-  bool get isClosed => throw UnimplementedError();
-  
+  LdScaffoldState get state => super.state as LdScaffoldState;
+
+  // 'LdWidgetCtrl' -------------------
   @override
-  // TODO: implement onDelete
-  InternalFinalCallback<void> get onDelete => throw UnimplementedError();
-  
-  @override
-  void onInit() {
-    // TODO: implement onInit
-  }
-  
-  @override
-  void onReady() {
-    // TODO: implement onReady
-  }
-  
-  @override
-  // TODO: implement onStart
-  InternalFinalCallback<void> get onStart => throw UnimplementedError();
-  
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
+  Widget buildWidget(BuildContext pCtx) {
+    // TODO: Crear el widget de tipo Scaffold
     throw UnimplementedError();
   }
+
+  // 🔄 'GetLifeCycleMixin' ------------
+  /// Called immediately after the widget is allocated in memory.
+  /// You might use this to initialize something for the controller.
+  @override
+  void onInit() {
+    LdScaffoldState state = super.state as LdScaffoldState;
+    _appBar ??= LdAppBar(pTitle: state.title, pLabel: state.label, pVCtrl: viewCtrl);    
+    super.onInit();
+  }
+
+  /// Called 1 frame after onInit(). It is the perfect place to enter
+  /// navigation events, like snackbar, dialogs, or a new route, or
+  /// async request.
+  @override
+  void onReady() {
+    // TODO: Codificar abans de cridar a suoer.onReady().
+    super.onReady();
+  }
+
+  /// Called before [onDelete] method. [onClose] might be used to
+  /// dispose resources used by the controller. Like closing events,
+  /// or streams before the controller is destroyed.
+  /// Or dispose objects that can potentially create some memory leaks,
+  /// like TextEditingControllers, AnimationControllers.
+  /// Might be useful as well to persist some data on disk.
+  @override
+  void onClose() {
+    // TODO: Codificar abans de cridar a suoer.onClose().
+    super.onClose();
+  }  
 }

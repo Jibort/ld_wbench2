@@ -4,7 +4,6 @@
 // Estats de la càrrega de dades per a la pàgina.
 import 'package:flutter/foundation.dart';
 import 'package:ld_wbench2/core/ld_ctrl.dart';
-import 'package:ld_wbench2/core/ld_registrable_id.dart';
 import 'package:ld_wbench2/core/ld_view_ctrl.dart';
 import 'package:ld_wbench2/tools/debug.dart';
 import 'package:ld_wbench2/tools/fi_fo.dart';
@@ -27,26 +26,44 @@ typedef FnExc = Future<(Exception?, bool)> Function(Exception? pExc);
 typedef FnStep = Future<Exception?> Function(FiFo pQueue, List<dynamic> pArgs);
 typedef FnThen = Exception? Function(FiFo pQueue);
 
-abstract class LdState<
-  S extends LdState<S, C>, 
-  C extends LdCtrl<C, S>>
-with LdRegistrableId {
-  // ESTÀTICS -------------------------
+abstract class LdState {
+  // 📝 ESTÀTICS -----------------------
   static const className = "LdState";
 
-  // MEMBRES --------------------------
+  // 🧩 MEMBRES ------------------------
+  String? _errorCode;
+  String? _errorMessage;
+  Exception? _exception;
+  late LdCtrl _ctrl;
   Function(FiFo pQueue)? _onAltered;
   final _queue = FiFo();
   int _length = 0;
   int _dids = 0;
-
-  // CONSTRUCTORS ---------------------
-  LdState({ String? pTag }) {
-    register(pTag);
-    Debug.debug(DebugLevel.debug_0, "[LdState]: ...estat '$tag' creat.");
+ 
+  // 🛠️ CONSTRUCTORS -------------------
+  LdState({ String? pTag, String? pErrorCode, String? pErrorMessage, Exception? pException })
+  : _errorCode = pErrorCode, _errorMessage = pErrorMessage, _exception = pException {
+    Debug.debug(DebugLevel.debug_0, "[LdState]: ...creat.");
   }
 
-  // GETTERS i SETTERS ----------------
+  // 📥 GETTERS/SETTERS ----------------
+  LdCtrl get ctrl => _ctrl;
+  set ctrl(LdCtrl pCtrl) => _ctrl = pCtrl;
+
+  String? get errorCode => _errorCode;
+  String? get errorMessage => _errorMessage;
+  setError(String? pErrCode, String? pErrMsg) { 
+    _errorCode = pErrCode;
+    _errorMessage = pErrMsg;
+    ctrl.notify(pTgts: [ ctrl.tag ]);
+  }
+
+  Exception? get exception => _exception;
+  set exception(Exception? pException) {
+    _exception = pException;
+    ctrl.notify(pTgts: [ ctrl.tag ]);
+  }
+
   FiFo get queue => _queue;
   int get length => _length;
   int get dids => _dids;
@@ -63,9 +80,6 @@ with LdRegistrableId {
   (int, int, double?) get stats => (length, dids, ratio);
   set onAltered(Function(FiFo pQueue)? pOnAltered) => _onAltered = pOnAltered;
 
-  // FUNCIONS ABSTRACTES --------------
-  void loadData();
-  
   // GESTIÓ DE PASOS ------------------
   // Afegeix un pas a la pila de pasos.
   void addFn(FnStep pStep,
@@ -185,26 +199,29 @@ Step[${loadStep.index}]: ${loadStep.title}
   }
 
   // FUNCIONS ABSTRACTES ---------------------
-  // Només cert quan el control·lador ha de començar a carregar dades.
+  // Carrega les dades de l'estat del widget o de la vista.
+  void loadData();
+  
+  // Només cert quan l'estat encara no ha carregat cap dada.
   bool get isNew;
 
-  // Només cert quan s'està preparant la càrrega.
+  // Només cert quan l'estat està preparant la càrrega.
   bool get isPreparing;
 
-  // Només cert quan s'està carregant dades.
+  // Només cert quan l'estat està carregant dades.
   bool get isLoading;
 
   // Només cert quan les dades han estat carregades.
   bool get isLoaded;
 
-  // Només cert quan s'està tornant a preparar una càrrega.
+  // Només cert quan lestat està tornant a preparar una càrrega.
   bool get isPreparingAgain;
 
-  // Només cert quan s'està tornant a carregar dades.
+  // Només cert quan l'estat està tornant a carregar dades.
   bool get isLoadingAgain;
 
-  // Només cert quan ha succeït una excepció en la càrrega de dades.
-  bool get isError;
+  // Només cert quan ha succeït una excepció en la càrrega de dades de l'estat.
+  bool get isError => errorCode != null || exception != null;
 
   // NETEJA ----------------------------------
   void reset() {

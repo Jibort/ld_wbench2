@@ -1,20 +1,26 @@
 // Dades de la vista MockupView
 
-import 'package:get/get_instance/src/lifecycle.dart';
+import 'package:get/get.dart';
 import 'package:ld_wbench2/core/ld_view_state.dart';
 import 'package:ld_wbench2/tools/debug.dart';
 import 'package:ld_wbench2/tools/fi_fo.dart';
-import 'package:ld_wbench2/views/mockup/controller.dart';
+import 'package:ld_wbench2/translations/tr.dart';
 
-class MockupViewState<
-  S extends MockupViewState<S, C>,
-  C extends MockupViewCtrl<C, S>>
-extends LdViewState<S, C> {
+class MockupViewState
+extends LdViewState {
   // ESTÀTICS -------------------------
   static String className = "MockupViewState";
 
+  factory MockupViewState.defInst({
+    required String pTitle,
+    required String? pSubtitle
+  }) => MockupViewState(
+          pTitle: Tr.sabinaApp.tr, 
+          pSubtitle: Tr.sabinaWelcome.tr
+        );
+
   // CONSTRUCTORS ---------------------
-  MockupViewState({ super.pTag, required super.pTitle, super.pSubtitle });
+  MockupViewState({ required super.pTitle, super.pSubtitle });
 
   // 'LdViewState' --------------------
   @override
@@ -78,12 +84,4 @@ extends LdViewState<S, C> {
      setLoaded(pLExc.$2);
     });
   }
-
-  @override bool get initialized => throw UnimplementedError();
-  @override bool get isClosed => throw UnimplementedError();
-  @override InternalFinalCallback<void> get onDelete => throw UnimplementedError();
-  @override void onInit() => throw UnimplementedError();
-  @override void onReady() => throw UnimplementedError();
-  @override InternalFinalCallback<void> get onStart => throw UnimplementedError();
-
 }

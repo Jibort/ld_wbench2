@@ -6,7 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:ld_wbench2/ld_sabina_controller.dart';
-import 'package:ld_wbench2/translations/Tr.dart';
+import 'package:ld_wbench2/translations/tr.dart';
 import 'package:ld_wbench2/tools/consts/devices.dart';
 import 'package:ld_wbench2/views/app_routes.dart';
 

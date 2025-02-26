@@ -1,18 +1,16 @@
 // Vista mockup per a demostrar el funcionament de LdScaffold i LdAppBar.
 // CreatedAt: 2025/02/16 dg. JIQ
 
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter/material.dart';
 import 'package:ld_wbench2/core/ld_view_ctrl.dart';
-import 'package:ld_wbench2/views/mockup/state.dart';
 import 'package:ld_wbench2/views/widget_key.dart';
 
-class MockupViewCtrl<
-  C extends MockupViewCtrl<C, S>,
-  S extends MockupViewState<S, C>>
-extends LdViewCtrl<C, S> {
-  MockupViewCtrl({ required super.pState }) {
-    addWidgets([ WidgetKey.scaffold.idx, WidgetKey.pageBody.idx, WidgetKey.appBar.idx, WidgetKey.appBarProgress.idx, ]);
+class MockupViewCtrl
+extends LdViewCtrl {
+  // 🛠️ CONSTRUCTORS -------------------
+  MockupViewCtrl({ required String pTag, required super.pState }): super(pTag: pTag) {
+    addWidgets([ WidgetKey.scaffold.idx, WidgetKey.appBar.idx, WidgetKey.appBarProgress.idx, WidgetKey.pageBody.idx ]);
   }
 
   @override

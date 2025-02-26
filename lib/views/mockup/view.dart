@@ -1,37 +1,34 @@
 
 import 'package:get/get.dart';
-import 'package:ld_wbench2/core/ld_registrable_id.dart';
 import 'package:ld_wbench2/core/ld_view.dart';
-import 'package:ld_wbench2/translations/Tr.dart';
+import 'package:ld_wbench2/translations/tr.dart';
 import 'package:ld_wbench2/views/mockup/state.dart';
 
 import 'controller.dart';
 export 'controller.dart';
 export 'state.dart';
 
-class MockupView<
-  S extends MockupViewState<S, C>, 
-  C extends MockupViewCtrl<C, S>>
-extends LdView<S, C> {
-  MockupView({super.key})
-  : super(pState: LdRegistrableId.find(Get.parameters[MockupViewState.className]!)) {
-    Get.parameters.remove(MockupViewState.className);
+class MockupView
+extends LdView<MockupViewCtrl> {
+  // ESTÀTICS --------------------------
+  static const className = 'MockupView';
+
+  // 🛠️ CONSTRUCTORS -------------------
+  MockupView({ super.key })
+  : super(pCtrl: Get.find(tag: className)) {
+    Get.delete(tag: className, force: true);
+    Get.put(ctrl, tag: ctrl.tag, permanent: true);
   }
 }
 
-class MockupViewBindings<
-  S extends MockupViewState<S, C>, 
-  C extends MockupViewCtrl<C, S>>
-extends Bindings {
+class MockupViewBinding extends Binding {
   @override
-  void dependencies() {
-    MockupViewState<S, C> state = MockupViewState<S, C>(
-      pTag: MockupViewState.className, 
-      pTitle: Tr.sabinaApp.tr, 
-      pSubtitle: Tr.sabinaWelcome.tr,
-    );
-    MockupViewCtrl<C, S> ctrl = MockupViewCtrl<C, S>(pState: state as S);
-    state.vCtrl = ctrl as C;
-    Get.parameters[MockupViewState.className] = state.tag;
+  List<Bind> dependencies() {
+    // Crea la instància de dades de la vista.
+    final state = MockupViewState(pTitle: Tr.sabinaApp.tr, pSubtitle: Tr.sabinaWelcome.tr);
+    // Crea la instància de control de la vista i l'associa a l'estat.
+    final ctrl = MockupViewCtrl(pTag: MockupView.className, pState: state);
+    // Guardem el 'tag' associat al controlador per a ser recuperat des de la view.
+    return [ Bind.put(ctrl, tag: MockupView.className) ];
   }
 }

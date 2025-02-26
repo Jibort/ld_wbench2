@@ -10,10 +10,11 @@ class AppRoutes {
   static final List<GetPage> pages = [
     GetPage(
       name: mockup,
-      binding: MockupViewBindings(),
-      page: () => MockupView<
-        S extends MockupViewState<S, C>, 
-        C extends MockupViewCtrl<C, S>>(),
+      middlewares: [],
+      participatesInRootNavigator: true,
+      children: [],
+      binding: MockupViewBinding(),
+      page: () => MockupView(),
     ),
   ];
 }
