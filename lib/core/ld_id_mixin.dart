@@ -11,7 +11,7 @@ mixin LdIdMixin {
   // 🧩 MEMBRES ------------------------
   final      int     _id = newId;
   late final String? _typeName;
-  late final String? _tag;
+  String? _tag;
 
   // 📥 GETTERS/SETTERS ----------------
   int get id => _id;

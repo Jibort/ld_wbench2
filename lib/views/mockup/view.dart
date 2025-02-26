@@ -24,11 +24,8 @@ extends LdView<MockupViewCtrl> {
 class MockupViewBinding extends Binding {
   @override
   List<Bind> dependencies() {
-    // Crea la instància de dades de la vista.
     final state = MockupViewState(pTitle: Tr.sabinaApp.tr, pSubtitle: Tr.sabinaWelcome.tr);
-    // Crea la instància de control de la vista i l'associa a l'estat.
     final ctrl = MockupViewCtrl(pTag: MockupView.className, pState: state);
-    // Guardem el 'tag' associat al controlador per a ser recuperat des de la view.
     return [ Bind.put(ctrl, tag: MockupView.className) ];
   }
 }

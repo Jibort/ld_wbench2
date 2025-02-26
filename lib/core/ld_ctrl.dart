@@ -19,6 +19,7 @@ with LdIdMixin {
   // 🛠️ CONSTRUCTORS -------------------
   LdCtrl({ String? pTag, required LdState pState })
   : _state = pState {
+    
     tag = pTag?? "${className}_$id";
     pState.ctrl = this;
     Get.put(this, tag: tag,  permanent: false);

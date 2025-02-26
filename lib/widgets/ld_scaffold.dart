@@ -45,7 +45,7 @@ extends LdWidget {
     bool drawerEnableOpenDragGesture = true,
     bool endDrawerEnableOpenDragGesture = true,
     String? restorationId,
-  }) : super(
+  }): super(
     pVCtrl: pViewState.vCtrl,
     pState: LdScaffoldState(
       pTag: pTag ?? WidgetKey.scaffold.idx,
@@ -54,34 +54,37 @@ extends LdWidget {
       pVCtrl: pViewState.vCtrl,
       pLabel: className
     )) {
-  ctrl = LdScaffoldCtrl(
-    pTag: pTag ?? WidgetKey.scaffold.idx,
-    pVCtrl: pViewState.vCtrl,
-    pTitle: pTitle,
-    pSubtitle: pSubtitle,
-    btnFloatAction: btnFloatAction,
-    wgtBody: wgtBody,
-    locBtnFloatAction: locBtnFloatAction,
-    aniBtnFloatAction: aniBtnFloatAction,
-    btnsPersFooter: btnsPersFooter,
-    panDrawer: panDrawer,
-    onChangedDrawer: onChangedDrawer,
-    panEndDrawer: panEndDrawer,
-    onChangedEndDrawer: onChangedEndDrawer,
-    barBottomNav: barBottomNav,
-    bottomSheet: bottomSheet,
-    backgroundColor: backgroundColor,
-    resizeToAvoidBottomInset: resizeToAvoidBottomInset,
-    primary: primary,
-    drawerDragStartBehavior: drawerDragStartBehavior,
-    extendBody: extendBody,
-    extendBodyBehindAppBar: extendBodyBehindAppBar,
-    drawerScrimColor: drawerScrimColor,
-    drawerEdgeDragWidth: drawerEdgeDragWidth,
-    drawerEnableOpenDragGesture: drawerEnableOpenDragGesture,
-    endDrawerEnableOpenDragGesture: endDrawerEnableOpenDragGesture,
-    restorationId: restorationId,
-  );}
+      tag = pTag ?? WidgetKey.scaffold.idx;
+      typeName = className;
+      ctrl = LdScaffoldCtrl(
+        pTag: tag,
+        pVCtrl: pViewState.vCtrl,
+        pTitle: pTitle,
+        pSubtitle: pSubtitle,
+        btnFloatAction: btnFloatAction,
+        wgtBody: wgtBody,
+        locBtnFloatAction: locBtnFloatAction,
+        aniBtnFloatAction: aniBtnFloatAction,
+        btnsPersFooter: btnsPersFooter,
+        panDrawer: panDrawer,
+        onChangedDrawer: onChangedDrawer,
+        panEndDrawer: panEndDrawer,
+        onChangedEndDrawer: onChangedEndDrawer,
+        barBottomNav: barBottomNav,
+        bottomSheet: bottomSheet,
+        backgroundColor: backgroundColor,
+        resizeToAvoidBottomInset: resizeToAvoidBottomInset,
+        primary: primary,
+        drawerDragStartBehavior: drawerDragStartBehavior,
+        extendBody: extendBody,
+        extendBodyBehindAppBar: extendBodyBehindAppBar,
+        drawerScrimColor: drawerScrimColor,
+        drawerEdgeDragWidth: drawerEdgeDragWidth,
+        drawerEnableOpenDragGesture: drawerEnableOpenDragGesture,
+        endDrawerEnableOpenDragGesture: endDrawerEnableOpenDragGesture,
+        restorationId: restorationId,
+      );
+    }
 }
 
 // ESTAT 'LdScaffoldState' ============
@@ -184,41 +187,45 @@ extends LdWidgetCtrl {
 
   // 'LdWidgetCtrl' -------------------
   @override
-  @override
-Widget buildWidget(BuildContext pCtx) {
-  // Obtenim el PreferredSizeWidget des de _appBar
-  final appBarWidget = _appBar != null ? (_appBar?.ctrl as LdAppBarCtrl).buildWidget(pCtx) as PreferredSizeWidget : null;
-  
-  return Scaffold(
-    appBar: appBarWidget,
-    body: (state.isNew || state.isLoading || state.isLoadingAgain)
-        ? const Center(child: CircularProgressIndicator())
-        : (wgtBody != null)
-            ? wgtBody
-            : viewCtrl.buildView(pCtx),
-    floatingActionButton: btnFloatAction,
-    floatingActionButtonLocation: locBtnFloatAction,
-    floatingActionButtonAnimator: aniBtnFloatAction,
-    persistentFooterButtons: btnsPersFooter,
-    drawer: panDrawer,
-    onDrawerChanged: onChangedDrawer,
-    endDrawer: panEndDrawer,
-    onEndDrawerChanged: onChangedEndDrawer,
-    bottomNavigationBar: barBottomNav,
-    bottomSheet: bottomSheet,
-    backgroundColor: backgroundColor ?? Theme.of(pCtx).scaffoldBackgroundColor,
-    resizeToAvoidBottomInset: resizeToAvoidBottomInset,
-    primary: primary,
-    drawerDragStartBehavior: drawerDragStartBehavior,
-    extendBody: extendBody,
-    extendBodyBehindAppBar: extendBodyBehindAppBar,
-    drawerScrimColor: drawerScrimColor,
-    drawerEdgeDragWidth: drawerEdgeDragWidth,
-    drawerEnableOpenDragGesture: drawerEnableOpenDragGesture,
-    endDrawerEnableOpenDragGesture: endDrawerEnableOpenDragGesture,
-    restorationId: restorationId,
-  );
-}
+  Widget buildWidget(BuildContext pCtx) {
+    // Obtenim el PreferredSizeWidget des de _appBar
+    final appBarWidget = _appBar != null ? (_appBar?.ctrl as LdAppBarCtrl).buildWidget(pCtx) as PreferredSizeWidget : null;
+    
+    // Obtenim els widgets reals des de LdWidget
+    final bodyWidget = wgtBody != null 
+        ? wgtBody?.build(pCtx) 
+        : (state.isNew || state.isLoading || state.isLoadingAgain)
+            ? const Center(child: CircularProgressIndicator())
+            : viewCtrl.buildView(pCtx);
+    
+    final fabWidget = btnFloatAction?.build(pCtx);
+    
+    return Scaffold(
+      appBar: appBarWidget,
+      body: bodyWidget,
+      floatingActionButton: fabWidget,
+      floatingActionButtonLocation: locBtnFloatAction,
+      floatingActionButtonAnimator: aniBtnFloatAction,
+      persistentFooterButtons: btnsPersFooter,
+      drawer: panDrawer,
+      onDrawerChanged: onChangedDrawer,
+      endDrawer: panEndDrawer,
+      onEndDrawerChanged: onChangedEndDrawer,
+      bottomNavigationBar: barBottomNav,
+      bottomSheet: bottomSheet,
+      backgroundColor: backgroundColor ?? Theme.of(pCtx).scaffoldBackgroundColor,
+      resizeToAvoidBottomInset: resizeToAvoidBottomInset,
+      primary: primary,
+      drawerDragStartBehavior: drawerDragStartBehavior,
+      extendBody: extendBody,
+      extendBodyBehindAppBar: extendBodyBehindAppBar,
+      drawerScrimColor: drawerScrimColor,
+      drawerEdgeDragWidth: drawerEdgeDragWidth,
+      drawerEnableOpenDragGesture: drawerEnableOpenDragGesture,
+      endDrawerEnableOpenDragGesture: endDrawerEnableOpenDragGesture,
+      restorationId: restorationId,
+    );
+  }
 
   // 🔄 'GetLifeCycleMixin' ------------
   /// Called immediately after the widget is allocated in memory.

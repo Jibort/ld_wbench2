@@ -13,9 +13,9 @@ extends GetWidget<C>
 with    LdIdMixin {
 
   // 🧩 MEMBRES ------------------------
-  final LdViewCtrl         _vCtrl; // Cotrolador de la vista on es renderitza el Widget.
-  final LdWidgetState      _state; // Estat del Widget.
-  late final LdWidgetCtrl  _ctrl;  // Controlador del Widget.
+  final LdViewCtrl        _vCtrl; // Cotrolador de la vista on es renderitza el Widget.
+  final LdWidgetState     _state; // Estat del Widget.
+  late final LdWidgetCtrl _ctrl;  // Controlador del Widget.
 
   // CONSTRUCTOR ------------------
   LdWidget({ 
@@ -24,8 +24,8 @@ with    LdIdMixin {
     required LdWidgetState pState,
   }): 
     _vCtrl = pVCtrl,
-    _state = pState, 
-    _ctrl =  pState.wCtrl;
+    _state = pState;
+    // _ctrl =  pState.wCtrl;
 
   // GETTERS/SETTERS ------------------
   LdViewCtrl    get vCtrl => _vCtrl;

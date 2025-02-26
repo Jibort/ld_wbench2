@@ -14,6 +14,7 @@ with LdIdMixin {
   // 🛠️ CONSTRUCTORS -------------------
   LdService({ String? pTag }) {
     tag = pTag?? "${className}_$id";
+    typeName = className;
     Get.put(this, tag: tag, permanent: true);
     Debug.debug(DebugLevel.debug_0, "[LdService]: Servei '$tag' creat.");
   }
