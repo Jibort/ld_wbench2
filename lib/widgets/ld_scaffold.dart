@@ -10,34 +10,11 @@ import 'package:ld_wbench2/core/ld_widget_ctrl.dart';
 import 'package:ld_wbench2/core/ld_widget_state.dart';
 import 'package:ld_wbench2/views/widget_key.dart';
 
+// WIDGET 'LdScaffold' ================
 class LdScaffold
 extends LdWidget {
   // ESTÀTICS -------------------------
   static const className = "LdScaffold";
-
-  // MEMBRES CLÀSSICS SCAFFOLD --------
-  final LdWidget? btnFloatAction;                        // Botó d'acció flotant
-  final LdWidget? wgtBody;                               // Cos de la pantalla
-  final FloatingActionButtonLocation? locBtnFloatAction; // Posició del FAB
-  final FloatingActionButtonAnimator? aniBtnFloatAction; // Animació del FAB
-  final List<Widget>? btnsPersFooter;                    // Botons fixos al peu
-  final Widget? panDrawer;                               // Panell lateral esquerre
-  final ValueChanged<bool>? onChangedDrawer;             // Callback quan s'obre/tanca el drawer
-  final Widget? panEndDrawer;                            // Panell lateral dret
-  final ValueChanged<bool>? onChangedEndDrawer;          // Callback quan s'obre/tanca l'endDrawer
-  final Widget? barBottomNav;                            // Barra inferior de navegació
-  final Widget? bottomSheet;                             // Fulla inferior persistent
-  final Color? backgroundColor;                          // Color de fons
-  final bool? resizeToAvoidBottomInset;                  // Evita que el teclat superposi el body
-  final bool primary;                                    // Controla si és Scaffold primari
-  final DragStartBehavior drawerDragStartBehavior;       // Comportament d'arrossegament del drawer
-  final bool extendBody;                                 // Permet que el body s'estengui sota elements
-  final bool extendBodyBehindAppBar;                     // Permet que el body s'estengui sota l'appBar
-  final Color? drawerScrimColor;                         // Color de superposició del drawer
-  final double? drawerEdgeDragWidth;                     // Amplada per arrossegar el drawer
-  final bool drawerEnableOpenDragGesture;                // Permet obrir el drawer amb gestos
-  final bool endDrawerEnableOpenDragGesture;             // Permet obrir l'endDrawer amb gestos
-  final String? restorationId;   
 
   // CONSTRUCTORS ---------------------
   LdScaffold({
@@ -46,40 +23,68 @@ extends LdWidget {
     required LdViewState pViewState,
     required String pTitle,
     String? pSubtitle,
-    this.btnFloatAction,                        
-    this.wgtBody,                               
-    this.locBtnFloatAction, 
-    this.aniBtnFloatAction, 
-    this.btnsPersFooter,   
-    this.panDrawer,                               
-    this.onChangedDrawer,             
-    this.panEndDrawer,                            
-    this.onChangedEndDrawer,
-    this.barBottomNav,                            
-    this.bottomSheet,                             
-    this.backgroundColor,                          
-    this.resizeToAvoidBottomInset,                  
-    this.primary = true,                                    
-    this.drawerDragStartBehavior = DragStartBehavior.start,       
-    this.extendBody = true,                                 
-    this.extendBodyBehindAppBar = false,                     
-    this.drawerScrimColor = Colors.black54,                         
-    this.drawerEdgeDragWidth = 20.0,                     
-    this.drawerEnableOpenDragGesture = true,                
-    this.endDrawerEnableOpenDragGesture = true,             
-    this.restorationId,             
-  }) 
-  : super(
+    LdWidget? btnFloatAction,
+    LdWidget? wgtBody,
+    FloatingActionButtonLocation? locBtnFloatAction,
+    FloatingActionButtonAnimator? aniBtnFloatAction,
+    List<Widget>? btnsPersFooter,
+    Widget? panDrawer,
+    ValueChanged<bool>? onChangedDrawer,
+    Widget? panEndDrawer,
+    ValueChanged<bool>? onChangedEndDrawer,
+    Widget? barBottomNav,
+    Widget? bottomSheet,
+    Color? backgroundColor,
+    bool? resizeToAvoidBottomInset,
+    bool primary = true,
+    DragStartBehavior drawerDragStartBehavior = DragStartBehavior.start,
+    bool extendBody = true,
+    bool extendBodyBehindAppBar = false,
+    Color? drawerScrimColor = Colors.black54,
+    double? drawerEdgeDragWidth = 20.0,
+    bool drawerEnableOpenDragGesture = true,
+    bool endDrawerEnableOpenDragGesture = true,
+    String? restorationId,
+  }) : super(
+    pVCtrl: pViewState.vCtrl,
+    pState: LdScaffoldState(
+      pTag: pTag ?? WidgetKey.scaffold.idx,
+      pTitle: pTitle,
+      pSubtitle: pSubtitle,
       pVCtrl: pViewState.vCtrl,
-      pState: LdScaffoldState(
-        pTag: pTag?? WidgetKey.scaffold.idx, 
-        pTitle: pTitle, 
-        pSubtitle: pSubtitle,
-        pVCtrl: pViewState.vCtrl,
-        pLabel: className
-      ));
+      pLabel: className
+    )) {
+  ctrl = LdScaffoldCtrl(
+    pTag: pTag ?? WidgetKey.scaffold.idx,
+    pVCtrl: pViewState.vCtrl,
+    pTitle: pTitle,
+    pSubtitle: pSubtitle,
+    btnFloatAction: btnFloatAction,
+    wgtBody: wgtBody,
+    locBtnFloatAction: locBtnFloatAction,
+    aniBtnFloatAction: aniBtnFloatAction,
+    btnsPersFooter: btnsPersFooter,
+    panDrawer: panDrawer,
+    onChangedDrawer: onChangedDrawer,
+    panEndDrawer: panEndDrawer,
+    onChangedEndDrawer: onChangedEndDrawer,
+    barBottomNav: barBottomNav,
+    bottomSheet: bottomSheet,
+    backgroundColor: backgroundColor,
+    resizeToAvoidBottomInset: resizeToAvoidBottomInset,
+    primary: primary,
+    drawerDragStartBehavior: drawerDragStartBehavior,
+    extendBody: extendBody,
+    extendBodyBehindAppBar: extendBodyBehindAppBar,
+    drawerScrimColor: drawerScrimColor,
+    drawerEdgeDragWidth: drawerEdgeDragWidth,
+    drawerEnableOpenDragGesture: drawerEnableOpenDragGesture,
+    endDrawerEnableOpenDragGesture: endDrawerEnableOpenDragGesture,
+    restorationId: restorationId,
+  );}
 }
 
+// ESTAT 'LdScaffoldState' ============
 class LdScaffoldState
 extends LdWidgetState {
   // MEMBRES --------------------------
@@ -110,29 +115,110 @@ extends LdWidgetState {
   void loadData() { }  
 }
 
+// CTRL 'LdScaffoldCtrl' ==============
 class LdScaffoldCtrl
 extends LdWidgetCtrl {
   // MEMBRES --------------------------
   LdAppBar? _appBar;
+  final LdWidget? btnFloatAction;
+  final LdWidget? wgtBody;
+  final FloatingActionButtonLocation? locBtnFloatAction;
+  final FloatingActionButtonAnimator? aniBtnFloatAction;
+  final List<Widget>? btnsPersFooter;
+  final Widget? panDrawer;
+  final ValueChanged<bool>? onChangedDrawer;
+  final Widget? panEndDrawer;
+  final ValueChanged<bool>? onChangedEndDrawer;
+  final Widget? barBottomNav;
+  final Widget? bottomSheet;
+  final Color? backgroundColor;
+  final bool? resizeToAvoidBottomInset;
+  final bool primary;
+  final DragStartBehavior drawerDragStartBehavior;
+  final bool extendBody;
+  final bool extendBodyBehindAppBar;
+  final Color? drawerScrimColor;
+  final double? drawerEdgeDragWidth;
+  final bool drawerEnableOpenDragGesture;
+  final bool endDrawerEnableOpenDragGesture;
+  final String? restorationId;
 
   // CONSTRUCTORS ---------------------
-  LdScaffoldCtrl({super.pTag, required super.pVCtrl, required String pTitle, String? pSubtitle })
-  : super(pState: LdScaffoldState(
-      
-      pLabel: "LdScaffoldState", 
-      pTitle: pTitle, pSubtitle: pSubtitle, 
-      pVCtrl: pVCtrl, pTag: pTag));
-
+  LdScaffoldCtrl({
+    super.pTag, 
+    required super.pVCtrl, 
+    required String pTitle, 
+    String? pSubtitle,
+    this.btnFloatAction,
+    this.wgtBody,
+    this.locBtnFloatAction,
+    this.aniBtnFloatAction,
+    this.btnsPersFooter,
+    this.panDrawer,
+    this.onChangedDrawer,
+    this.panEndDrawer,
+    this.onChangedEndDrawer,
+    this.barBottomNav,
+    this.bottomSheet,
+    this.backgroundColor,
+    this.resizeToAvoidBottomInset,
+    this.primary = true,
+    this.drawerDragStartBehavior = DragStartBehavior.start,
+    this.extendBody = true,
+    this.extendBodyBehindAppBar = false,
+    this.drawerScrimColor = Colors.black54,
+    this.drawerEdgeDragWidth = 20.0,
+    this.drawerEnableOpenDragGesture = true,
+    this.endDrawerEnableOpenDragGesture = true,
+    this.restorationId,
+  }): super(pState: LdScaffoldState(
+      pLabel: "LdScaffoldState",
+      pTitle: pTitle, 
+      pSubtitle: pSubtitle,
+      pVCtrl: pVCtrl, 
+      pTag: pTag));
+  
   // GETTERS/SETTERS ------------------
   @override
   LdScaffoldState get state => super.state as LdScaffoldState;
 
   // 'LdWidgetCtrl' -------------------
   @override
-  Widget buildWidget(BuildContext pCtx) {
-    // TODO: Crear el widget de tipo Scaffold
-    throw UnimplementedError();
-  }
+  @override
+Widget buildWidget(BuildContext pCtx) {
+  // Obtenim el PreferredSizeWidget des de _appBar
+  final appBarWidget = _appBar != null ? (_appBar?.ctrl as LdAppBarCtrl).buildWidget(pCtx) as PreferredSizeWidget : null;
+  
+  return Scaffold(
+    appBar: appBarWidget,
+    body: (state.isNew || state.isLoading || state.isLoadingAgain)
+        ? const Center(child: CircularProgressIndicator())
+        : (wgtBody != null)
+            ? wgtBody
+            : viewCtrl.buildView(pCtx),
+    floatingActionButton: btnFloatAction,
+    floatingActionButtonLocation: locBtnFloatAction,
+    floatingActionButtonAnimator: aniBtnFloatAction,
+    persistentFooterButtons: btnsPersFooter,
+    drawer: panDrawer,
+    onDrawerChanged: onChangedDrawer,
+    endDrawer: panEndDrawer,
+    onEndDrawerChanged: onChangedEndDrawer,
+    bottomNavigationBar: barBottomNav,
+    bottomSheet: bottomSheet,
+    backgroundColor: backgroundColor ?? Theme.of(pCtx).scaffoldBackgroundColor,
+    resizeToAvoidBottomInset: resizeToAvoidBottomInset,
+    primary: primary,
+    drawerDragStartBehavior: drawerDragStartBehavior,
+    extendBody: extendBody,
+    extendBodyBehindAppBar: extendBodyBehindAppBar,
+    drawerScrimColor: drawerScrimColor,
+    drawerEdgeDragWidth: drawerEdgeDragWidth,
+    drawerEnableOpenDragGesture: drawerEnableOpenDragGesture,
+    endDrawerEnableOpenDragGesture: endDrawerEnableOpenDragGesture,
+    restorationId: restorationId,
+  );
+}
 
   // 🔄 'GetLifeCycleMixin' ------------
   /// Called immediately after the widget is allocated in memory.
