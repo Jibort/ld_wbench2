@@ -49,16 +49,6 @@ extends LdState {
     vCtrl.notify(pTgts: [ vCtrl.tag ]);
   }
   
-  // String? get errorCode => _errorCode;
-  // String? get errorMessage => _errorMessage;
-  // setError(String? pErrCode, String? pErrMsg) { 
-  //   _errorCode = pErrCode;
-  //   _errorMessage = pErrMsg;
-  //   vCtrl.notify(pTgts: [ vCtrl.tag ]);
-  // }
-
-  // Exception? get exception => _exception;
-
   // Controlador de la vista ----------  
   LdViewCtrl get vCtrl => super.ctrl as LdViewCtrl;
   set vCtrl(LdViewCtrl pVCtrl) => super.ctrl = pVCtrl;

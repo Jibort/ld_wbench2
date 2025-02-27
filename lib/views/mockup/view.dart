@@ -16,16 +16,25 @@ extends LdView<MockupViewCtrl> {
   // 🛠️ CONSTRUCTORS -------------------
   MockupView({ super.key })
   : super(pCtrl: Get.find(tag: className)) {
-    Get.delete(tag: className, force: true);
-    Get.put(ctrl, tag: ctrl.tag, permanent: true);
+    // Get.delete(tag: className, force: true);
+    // Get.put(ctrl, tag: ctrl.tag, permanent: true);
   }
 }
 
-class MockupViewBinding extends Binding {
+class MockupViewBinding extends Bindings {
   @override
-  List<Bind> dependencies() {
+  void dependencies() {
     final state = MockupViewState(pTitle: Tr.sabinaApp.tr, pSubtitle: Tr.sabinaWelcome.tr);
     final ctrl = MockupViewCtrl(pTag: MockupView.className, pState: state);
-    return [ Bind.put(ctrl, tag: MockupView.className) ];
+    Get.put(ctrl, tag: MockupView.className);
   }
 }
+
+// class MockupViewBinding extends Binding {
+//   @override
+//   List<Bind> dependencies() {
+//     final state = MockupViewState(pTitle: Tr.sabinaApp.tr, pSubtitle: Tr.sabinaWelcome.tr);
+//     final ctrl = MockupViewCtrl(pTag: MockupView.className, pState: state);
+//     return [ Bind.put(ctrl, tag: MockupView.className) ];
+//   }
+// }

@@ -34,6 +34,8 @@ with LdIdMixin {
   @override
   void onInit() {
     super.onInit();
+    // Aquesta crida no sembla fer-se mai.
+    // _state.loadData();
     Debug.debug(DebugLevel.debug_1, "[onInit.$typeName]: El controlador '$typeName(tag: $tag)' ha estat inicialitzat.");
   }
 
@@ -42,7 +44,6 @@ with LdIdMixin {
   void onReady() {
     Debug.debug(DebugLevel.debug_1, "[onReady.$typeName]: La interfície gràfica del widget $typeName està completament carregada.");
     super.onReady();
-    _state.loadData();
     Debug.debug(DebugLevel.debug_1, "[onReady.$typeName]: La interfície gràfica del controlador $typeName està completament carregada.");
   }
 

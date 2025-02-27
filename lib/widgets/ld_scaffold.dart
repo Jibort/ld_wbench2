@@ -189,7 +189,12 @@ extends LdWidgetCtrl {
   @override
   Widget buildWidget(BuildContext pCtx) {
     // Obtenim el PreferredSizeWidget des de _appBar
-    final appBarWidget = _appBar != null ? (_appBar?.ctrl as LdAppBarCtrl).buildWidget(pCtx) as PreferredSizeWidget : null;
+    final appBarWidget = _appBar != null 
+        ? PreferredSize(
+            preferredSize: Size.fromHeight(kToolbarHeight + MediaQuery.of(pCtx).padding.top),
+            child: (_appBar!.ctrl as LdAppBarCtrl).buildWidget(pCtx),
+          )
+        : null;
     
     // Obtenim els widgets reals des de LdWidget
     final bodyWidget = wgtBody != null 
@@ -227,14 +232,17 @@ extends LdWidgetCtrl {
     );
   }
 
+
+
   // 🔄 'GetLifeCycleMixin' ------------
   /// Called immediately after the widget is allocated in memory.
   /// You might use this to initialize something for the controller.
   @override
   void onInit() {
-    LdScaffoldState state = super.state as LdScaffoldState;
-    _appBar ??= LdAppBar(pTitle: state.title, pLabel: state.label, pVCtrl: viewCtrl);    
     super.onInit();
+    LdScaffoldState state = super.state as LdScaffoldState;
+    _appBar = LdAppBar(pTitle: state.title, pLabel: state.label, pVCtrl: viewCtrl);  
+    (_appBar!.ctrl as LdAppBarCtrl).onInit(); 
   }
 
   /// Called 1 frame after onInit(). It is the perfect place to enter
