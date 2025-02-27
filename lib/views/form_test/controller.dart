@@ -20,12 +20,95 @@ extends LdViewCtrl {
   // MEMBRES ADDICIONALS -------------
   final formKey = GlobalKey<FormState>();
   
-  // Referències a widgets
-  late LdEditWidget nameField;
-  late LdEditWidget emailField;
-  late LdCheckWidget termsCheck;
-  late LdDatePickerWidget birthDatePicker;
-  late LdTimePickerWidget appointmentPicker;
+  // WIDGETS =========================
+  LdEditWidget? _nameField;
+  LdEditWidget? _emailField;
+  LdCheckWidget? _termsCheck;
+  LdDatePickerWidget? _birthDatePicker;
+  LdTimePickerWidget? _appointmentPicker;
+
+  // GETTERS DE WIDGETS ===============
+  LdEditWidget get nameField {
+    _nameField ??= LdEditWidget(
+      pVCtrl: this,
+      label: 'Nom complet',
+      hintText: 'Introduïu el vostre nom',
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Si us plau, introduïu el vostre nom';
+        } else if (value.length < 3) {
+          return 'El nom ha de tenir almenys 3 caràcters';
+        }
+        return null;
+      },
+    );
+    return _nameField!;
+  }
+  
+  LdEditWidget get emailField {
+    _emailField ??= LdEditWidget(
+      pVCtrl: this,
+      label: 'Correu electrònic',
+      hintText: 'exemple@correu.com',
+      keyboardType: TextInputType.emailAddress,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Si us plau, introduïu el vostre correu';
+        }
+        if (!GetUtils.isEmail(value)) {
+          return 'Si us plau, introduïu un correu vàlid';
+        }
+        return null;
+      },
+    );
+    return _emailField!;
+  }
+  
+  LdCheckWidget get termsCheck {
+    _termsCheck ??= LdCheckWidget(
+      pVCtrl: this,
+      label: 'Accepto els termes i condicions',
+      validator: (value) {
+        if (value != true) {
+          return 'Cal acceptar els termes per continuar';
+        }
+        return null;
+      },
+    );
+    return _termsCheck!;
+  }
+  
+  LdDatePickerWidget get birthDatePicker {
+    _birthDatePicker ??= LdDatePickerWidget(
+      pVCtrl: this,
+      label: 'Data de naixement',
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+      validator: (value) {
+        if (value == null) {
+          return 'Si us plau, seleccioneu la data de naixement';
+        }
+        return null;
+      },
+    );
+    return _birthDatePicker!;
+  }
+  
+  LdTimePickerWidget get appointmentPicker {
+    _appointmentPicker ??= LdTimePickerWidget(
+      pVCtrl: this,
+      label: 'Hora de cita',
+      minTime: TimeOfDay(hour: 9, minute: 0),
+      maxTime: TimeOfDay(hour: 18, minute: 0),
+      validator: (value) {
+        if (value == null) {
+          return 'Si us plau, seleccioneu una hora per la cita';
+        }
+        return null;
+      },
+    );
+    return _appointmentPicker!;
+  }
   
   // 🛠️ CONSTRUCTORS -------------------
   FormTestViewCtrl({ required String pTag, required super.pState }): super(pTag: pTag) {
@@ -106,19 +189,18 @@ extends LdViewCtrl {
     update([WidgetKey.pageBody.idx]);
   }
 
-  void resetForm() {
-    // Reiniciem cada camp individualment
-    nameField.reset();
-    emailField.reset();
-    termsCheck.reset();
-    birthDatePicker.reset();
-    appointmentPicker.reset();
+ void resetForm() {
+    _nameField = null;
+    _emailField = null;
+    _termsCheck = null;
+    _birthDatePicker = null;
+    _appointmentPicker = null;
     
     // Actualitzem l'estat global
     testState.updateFormData('');
     testState.setFormValidity(false);
     
-    // Important: Forcem la reconstrucció de la vista
+    // Important: Forçar la reconstrucció de la vista
     update([WidgetKey.pageBody.idx]);
     
     Get.snackbar(
@@ -133,74 +215,9 @@ extends LdViewCtrl {
 
   @override
   Widget buildView(BuildContext pCtx) {
-    // Inicialitzar camps del formulari amb validadors millorats
-    nameField = LdEditWidget(
-      pVCtrl: this,
-      label: 'Nom complet',
-      hintText: 'Introduïu el vostre nom',
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Si us plau, introduïu el vostre nom';
-        } else if (value.length < 3) {
-          return 'El nom ha de tenir almenys 3 caràcters';
-        }
-        return null;
-      },
-    );
+    // Ja no necessitem inicialitzar els widgets aquí,
+    // perquè es faran a través dels getters
     
-    emailField = LdEditWidget(
-      pVCtrl: this,
-      label: 'Correu electrònic',
-      hintText: 'exemple@correu.com',
-      keyboardType: TextInputType.emailAddress,
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Si us plau, introduïu el vostre correu';
-        }
-        if (!GetUtils.isEmail(value)) {
-          return 'Si us plau, introduïu un correu vàlid';
-        }
-        return null;
-      },
-    );
-    
-    termsCheck = LdCheckWidget(
-      pVCtrl: this,
-      label: 'Accepto els termes i condicions',
-      validator: (value) {
-        if (value != true) {
-          return 'Cal acceptar els termes per continuar';
-        }
-        return null;
-      },
-    );
-    
-    birthDatePicker = LdDatePickerWidget(
-      pVCtrl: this,
-      label: 'Data de naixement',
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
-      validator: (value) {
-        if (value == null) {
-          return 'Si us plau, seleccioneu la data de naixement';
-        }
-        return null;
-      },
-    );
-    
-    appointmentPicker = LdTimePickerWidget(
-      pVCtrl: this,
-      label: 'Hora de cita',
-      minTime: TimeOfDay(hour: 9, minute: 0),
-      maxTime: TimeOfDay(hour: 18, minute: 0),
-      validator: (value) {
-        if (value == null) {
-          return 'Si us plau, seleccioneu una hora per la cita';
-        }
-        return null;
-      },
-    );
-
     final bodyWidget = _buildBody(pCtx);
     
     return LdScaffoldWidget(

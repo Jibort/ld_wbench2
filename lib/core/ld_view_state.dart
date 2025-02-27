@@ -37,7 +37,7 @@ extends LdState {
   // GETTERS/SETTERS ------------------
   String  get title => _title;
   String? get subtitle => _subtitle;
-  void setTitles(String pTitle, String? pSubtitle) { 
+  void setTitles({required String pTitle, String? pSubtitle}) { 
     _title = pTitle;
     _subtitle = pSubtitle;
     vCtrl.notify(pTgts: [ vCtrl.tag ]);

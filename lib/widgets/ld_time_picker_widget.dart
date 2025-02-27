@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:ld_wbench2/core/ld_widget.dart';
 import 'package:ld_wbench2/core/ld_widget_ctrl.dart';
 import 'package:ld_wbench2/core/ld_widget_state.dart';
-import 'package:ld_wbench2/tools/debug.dart';
 import 'package:ld_wbench2/tools/null_mang.dart';
 
 class LdTimePickerWidget extends LdWidget {
@@ -223,20 +222,15 @@ class LdTimePickerWidgetCtrl extends LdWidgetCtrl {
     // Actualitzem el text del controlador
     _controller.text = '';
     
-    // Reiniciem l'estat del camp del formulari si existeix
+    // Reiniciem l'estat del camp del formulari
     if (_fieldKey.currentState != null) {
       _fieldKey.currentState!.reset();
+      // Important: Forçar la reconstrucció amb un valor nul
+      _fieldKey.currentState!.didChange(null);
     }
     
-    // Forcem una notificació per actualitzar la UI
-    super.notify(pTgts: [tag]);
-  }
-
-  @override
-  void onInit() {
-    super.onInit();
-    _updateDisplayText();
-    Debug.debug(DebugLevel.debug_1, "[onInit.${runtimeType.toString()}]: El controlador del widget de selecció d'hora ha estat inicialitzat.");
+    // Notificar explícitament tots els targets
+    notify();
   }
 
   @override

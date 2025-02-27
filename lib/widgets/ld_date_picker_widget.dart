@@ -176,20 +176,22 @@ class LdDatePickerWidgetCtrl extends LdWidgetCtrl {
   
   void reset() {
     // Primer, netegem l'estat intern
-    (state as LdDatePickerWidgetState).selectedDate = null;
+    (state as LdDatePickerWidgetState).selectedDate = null;  // o TimePickerWidgetState
     (state as LdDatePickerWidgetState).errorText = null;
     (state as LdDatePickerWidgetState).isValid = true;
     
     // Actualitzem el text del controlador
     _controller.text = '';
     
-    // Reiniciem l'estat del camp del formulari si existeix
+    // Reiniciem l'estat del camp del formulari
     if (_fieldKey.currentState != null) {
       _fieldKey.currentState!.reset();
+      // Important: Forçar la reconstrucció amb un valor nul
+      _fieldKey.currentState!.didChange(null);
     }
     
-    // Forcem una notificació per actualitzar la UI
-    super.notify(pTgts: [tag]);
+    // Notificar explícitament tots els targets
+    notify();
   }
 
   @override

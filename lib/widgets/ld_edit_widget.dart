@@ -145,12 +145,21 @@ class LdEditWidgetCtrl extends LdWidgetCtrl {
         return true; // Si no hi ha validator, considerem el camp vàlid
       }
       
-      // Executar la validació
-      final isValid = _fieldKey.currentState!.validate();
-      Debug.debug(DebugLevel.debug_2, "[${runtimeType.toString()}]: Resultat de validació: $isValid");
+      // Obtenir el resultat de la validació directament del validador
+      final error = validator!(_controller.text);
+      final isValid = error == null;
       
-      // Actualitzar l'estat
+      // Actualitzar ambdós estats: el FormField i el nostre estat intern
+      (state as LdEditWidgetState).errorText = error;
       (state as LdEditWidgetState).isValid = isValid;
+      
+      // Forçar l'actualització de l'estat del FormField
+      _fieldKey.currentState!.validate();
+      
+      // Notificar el canvi
+      notify(pTgts: [tag]);
+      
+      Debug.debug(DebugLevel.debug_2, "[${runtimeType.toString()}]: Resultat de validació: $isValid");
       return isValid;
     } else {
       Debug.debug(DebugLevel.debug_2, "[${runtimeType.toString()}]: L'estat del camp no està inicialitzat!");
@@ -160,11 +169,19 @@ class LdEditWidgetCtrl extends LdWidgetCtrl {
   
   void reset() {
     _controller.text = '';
+    (state as LdEditWidgetState).text = '';
     (state as LdEditWidgetState).errorText = null;
     (state as LdEditWidgetState).isValid = true;
+    
+    // Reiniciar l'estat del FormField
     if (_fieldKey.currentState != null) {
       _fieldKey.currentState!.reset();
+      // Important: Forçar la reconstrucció amb un valor nou i sense errors
+      _fieldKey.currentState!.didChange('');
     }
+    
+    // Notificar el canvi explícitament a tots els targets
+    notify();
   }
 
   @override
@@ -225,47 +242,54 @@ class LdEditWidgetCtrl extends LdWidgetCtrl {
             textInputAction: textInputAction,
             maxLength: maxLength,
             onChanged: (value) {
-              // Quan l'usuari canvia el text, netegem l'error si n'hi ha
-              if ((state as LdEditWidgetState).errorText != null) {
-                (state as LdEditWidgetState).errorText = null;
-                notify(pTgts: [tag]);
+              // CORRECCIÓ: Validem el nou valor immediatament si hi ha un validador
+              if (isNotNull(validator)) {
+                final error = validator!(value);
+                (state as LdEditWidgetState).errorText = error;
+                (state as LdEditWidgetState).isValid = error == null;
+                // Actualitzem l'estat del FormField si existeix
+                if (_fieldKey.currentState != null) {
+                  _fieldKey.currentState!.didChange(value);
+                  if (error == null) {
+                    // Forcem que es netegi l'error en el FormField
+                    _fieldKey.currentState!.validate();
+                  }
+                }
               }
               
+              // Actualitzem l'estat intern
+              (state as LdEditWidgetState).text = value;
+              
+              // Notifiquem el canvi al pare
               if (isNotNull(onChanged)) {
                 onChanged!(value);
               }
+              
+              // IMPORTANT: Notifiquem explícitament a tothom
+              notify(pTgts: [tag]);
             },
             onFieldSubmitted: (value) {
               if (isNotNull(onSubmitted)) {
                 onSubmitted!(value);
               }
             },
-            // Evitar validació automàtica en perdre el focus
-            autovalidateMode: AutovalidateMode.disabled,
+            // Canviem per validar en canviar, per així mantenir sincronitzat l'estat
+            autovalidateMode: AutovalidateMode.onUserInteraction,
             validator: validator,
           ),
           onFocusChange: (hasFocus) {
-            // Si perd el focus i hi ha text, validem
-            if (!hasFocus && _controller.text.isNotEmpty && validator != null) {
+            // Si perd el focus, validem sempre
+            if (!hasFocus && validator != null) {
               String? error = validator!(_controller.text);
-              if (error != null) {
-                (state as LdEditWidgetState).errorText = error;
-                (state as LdEditWidgetState).isValid = false;
-              } else {
-                // Netegem error si era vàlid
-                (state as LdEditWidgetState).errorText = null;
-                (state as LdEditWidgetState).isValid = true;
-              }
+              (state as LdEditWidgetState).errorText = error;
+              (state as LdEditWidgetState).isValid = error == null;
+              // Notifiquem explícitament per forçar una actualització visual
               notify(pTgts: [tag]);
-            } 
-            // Si perd el focus i està buit, no mostrem error (excepte en validació explícita)
-            else if (!hasFocus && _controller.text.isEmpty) {
-              // Mantenim l'error només si hi ha hagut una validació explícita
-              // En canvi de focus no forcem mostrar errors en camps buits
             }
           },
         ),
       ],
     );
   }
+
 }

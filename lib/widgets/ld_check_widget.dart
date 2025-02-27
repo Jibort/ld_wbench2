@@ -126,9 +126,16 @@ class LdCheckWidgetCtrl extends LdWidgetCtrl {
     (state as LdCheckWidgetState).value = false;
     (state as LdCheckWidgetState).errorText = null;
     (state as LdCheckWidgetState).isValid = true;
+    
+    // Reiniciar l'estat del FormField
     if (_fieldKey.currentState != null) {
       _fieldKey.currentState!.reset();
+      // Important: Forçar la reconstrucció amb un valor nou
+      _fieldKey.currentState!.didChange(false);
     }
+    
+    // Notificar el canvi explícitament
+    notify();
   }
 
   @override
@@ -156,82 +163,78 @@ class LdCheckWidgetCtrl extends LdWidgetCtrl {
                 (state as LdCheckWidgetState).value = newValue;
                 field.didChange(newValue);
                 
-                // Netegem l'error si canvia a true
-                if (newValue && (state as LdCheckWidgetState).errorText != null) {
-                  (state as LdCheckWidgetState).errorText = null;
-                }
-                
-                // Si canvia a true i hi havia un error, validem de nou
-                if (newValue && field.hasError && validator != null) {
-                  final error = validator!(newValue);
-                  field.validate();
-                  
-                  // Actualitzem l'estat
-                  (state as LdCheckWidgetState).errorText = error;
-                  (state as LdCheckWidgetState).isValid = error == null;
-                }
-                
                 // Notifiquem el canvi
                 if (isNotNull(onChanged)) {
                   onChanged!(newValue);
                 }
                 
+                // IMPORTANT: Validem immediatament
+                if (validator != null) {
+                  final error = validator!(newValue);
+                  (state as LdCheckWidgetState).errorText = error;
+                  (state as LdCheckWidgetState).isValid = error == null;
+                }
+                
                 // Actualitzem la UI
                 notify(pTgts: [tag]);
               } : null,
-              child: Row(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Checkbox(
-                    value: (state as LdCheckWidgetState).value,
-                    tristate: tristate,
-                    onChanged: enabled 
-                      ? (bool? newValue) {
-                          if (newValue != null) {
-                            // Utilitzem el mateix codi que a onTap de InkWell
-                            (state as LdCheckWidgetState).value = newValue;
-                            field.didChange(newValue);
-                            
-                            // Netegem l'error si canvia a true
-                            if (newValue && (state as LdCheckWidgetState).errorText != null) {
-                              (state as LdCheckWidgetState).errorText = null;
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: (state as LdCheckWidgetState).value,
+                        tristate: tristate,
+                        onChanged: enabled 
+                          ? (bool? newValue) {
+                              if (newValue != null) {
+                                // Actualitzem el valor directament
+                                (state as LdCheckWidgetState).value = newValue;
+                                field.didChange(newValue);
+                                
+                                // Validem immediatament
+                                if (validator != null) {
+                                  final error = validator!(newValue);
+                                  (state as LdCheckWidgetState).errorText = error;
+                                  (state as LdCheckWidgetState).isValid = error == null;
+                                }
+                                
+                                if (isNotNull(onChanged)) {
+                                  onChanged!(newValue);
+                                }
+                                
+                                // Actualitzem la UI
+                                notify(pTgts: [tag]);
+                              }
                             }
-                            
-                            // Actualitzem l'estat
-                            if (validator != null) {
-                              final error = validator!(newValue);
-                              (state as LdCheckWidgetState).errorText = error;
-                              (state as LdCheckWidgetState).isValid = error == null;
-                            }
-                            
-                            if (isNotNull(onChanged)) {
-                              onChanged!(newValue);
-                            }
-                            
-                            // Actualitzem la UI
-                            notify(pTgts: [tag]);
-                          }
-                        }
-                      : null,
+                          : null,
+                      ),
+                      Expanded(
+                        child: Text(
+                          label,
+                          style: TextStyle(
+                            color: enabled ? null : Theme.of(pCtx).disabledColor,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  Expanded(
-                    child: Text(
-                      label,
-                      style: TextStyle(
-                        color: enabled ? null : Theme.of(pCtx).disabledColor,
+                  // Text d'error directament sota el text del checkbox, sense separació
+                  if (field.hasError)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 40.0),
+                      child: Text(
+                        field.errorText!,
+                        style: TextStyle(
+                          color: Theme.of(pCtx).colorScheme.error, 
+                          fontSize: 12.0
+                        ),
                       ),
                     ),
-                  ),
                 ],
               ),
             ),
-            if (field.hasError)
-              Padding(
-                padding: const EdgeInsets.only(left: 12.0, top: 4.0),
-                child: Text(
-                  field.errorText!,
-                  style: TextStyle(color: Theme.of(pCtx).colorScheme.error, fontSize: 12.0),
-                ),
-              ),
           ],
         );
       },

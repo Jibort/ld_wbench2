@@ -3,13 +3,15 @@
 
 import 'package:get/get.dart';
 import 'package:ld_wbench2/core/ld_view.dart';
+import 'package:ld_wbench2/translations/tr.dart';
 import 'package:ld_wbench2/views/form_test/controller.dart';
 import 'package:ld_wbench2/views/form_test/state.dart';
 
 export 'controller.dart';
 export 'state.dart';
 
-class FormTestView extends LdView<FormTestViewCtrl> {
+class FormTestView 
+extends LdView<FormTestViewCtrl> {
   // ESTÀTICS --------------------------
   static const className = 'FormTestView';
 
@@ -22,8 +24,8 @@ class FormTestViewBinding extends Bindings {
   @override
   void dependencies() {
     final state = FormTestViewState(
-      pTitle: 'Test de Formulari',
-      pSubtitle: 'Prova dels nous LdWidgets'
+      pTitle: Tr.sabinaApp.tr,
+      pSubtitle: Tr.sabinaWelcome.tr,
     );
     final ctrl = FormTestViewCtrl(pTag: FormTestView.className, pState: state);
     Get.put(ctrl, tag: FormTestView.className);
