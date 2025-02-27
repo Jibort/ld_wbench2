@@ -151,7 +151,7 @@ class LdScaffoldCtrl extends LdWidgetCtrl {
   final String? restorationId;
   
   // AppBar dedicat
-  late final LdAppBarWidget _appBar;
+  LdAppBarWidget? _appBar;
 
   // CONSTRUCTORS ---------------------
   LdScaffoldCtrl({
@@ -184,7 +184,15 @@ class LdScaffoldCtrl extends LdWidgetCtrl {
     this.restorationId,
   }): 
     _title = pTitle,
-    _subtitle = pSubtitle;
+    _subtitle = pSubtitle {
+      // Inicialitzem explícitament l'AppBar
+      _appBar ??= LdAppBarWidget(
+        pTitle: _title, 
+        pSubtitle: _subtitle,
+        pLabel: 'AppBar', 
+        pViewState: viewCtrl.state as LdViewState,
+      );
+    }
   
   // GETTERS/SETTERS ------------------
   @override
@@ -194,13 +202,13 @@ class LdScaffoldCtrl extends LdWidgetCtrl {
   void onInit() {
     super.onInit();
     
-    // Inicialitzem explícitament l'AppBar
-    _appBar = LdAppBarWidget(
-      pTitle: _title, 
-      pSubtitle: _subtitle,
-      pLabel: 'AppBar', 
-      pViewState: viewCtrl.state as LdViewState,
-    );
+    // // Inicialitzem explícitament l'AppBar
+    // _appBar ??= LdAppBarWidget(
+    //   pTitle: _title, 
+    //   pSubtitle: _subtitle,
+    //   pLabel: 'AppBar', 
+    //   pViewState: viewCtrl.state as LdViewState,
+    // );
     
     Debug.debug(DebugLevel.debug_0, "[LdScaffoldCtrl.onInit]: AppBar creada amb títol: $_title");
   }
@@ -211,7 +219,7 @@ class LdScaffoldCtrl extends LdWidgetCtrl {
     // Construïm l'AppBar de forma adequada
     final appBarWidget = PreferredSize(
       preferredSize: Size.fromHeight(kToolbarHeight),
-      child: _appBar.build(pCtx),
+      child: _appBar!.build(pCtx),
     );
     
     Debug.debug(DebugLevel.debug_0, "[LdScaffoldCtrl.buildWidget]: Construint Scaffold amb AppBar");
