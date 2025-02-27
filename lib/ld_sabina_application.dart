@@ -1,5 +1,5 @@
 // Aplicació Sabina.
-// CreatedAt: 2025/02/13 dj. JIQ
+// CreatedAt: 2025/02/27 dj. JIQ
 
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -50,7 +50,7 @@ class LdSabinaApplication extends StatelessWidget {
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
-          initialRoute: AppRoutes.mockup,
+          initialRoute: AppRoutes.initialRoute, // Utilitzem la variable de ruta inicial
           getPages: AppRoutes.pages,
         )
       )

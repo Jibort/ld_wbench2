@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:ld_wbench2/core/ld_view_ctrl.dart';
+import 'package:ld_wbench2/core/ld_view_state.dart';
 import 'package:ld_wbench2/core/ld_widget.dart';
 import 'package:ld_wbench2/core/ld_widget_ctrl.dart';
 import 'package:ld_wbench2/theme/text_styles.dart';
@@ -14,30 +15,34 @@ import 'package:ld_wbench2/widgets/ld_action_button.dart';
 import 'package:ld_wbench2/core/ld_widget_state.dart';
 
 final  barHeight = kToolbarHeight + MediaQuery.of(Get.context!).padding.top;
-class LdAppBar
+class LdAppBarWidget
 extends LdWidget {
   // ESTÀTICS -------------------------
   static String className = "LdAppBar";
 
-  // MEMBRES --------------------------
-
   // CONSTRUCTORS ---------------------
-  LdAppBar({
-    super.key, String? pTag,
+  LdAppBarWidget({
+    super.key, 
+    String? pTag,
+    required LdViewState pViewState,
     required String pTitle, 
     String? pSubtitle, 
     required String pLabel, 
     bool showDrawerIcon = false,
     bool showBackButton = false,
     List<LdActionButton>? pActions,
-    required super.pVCtrl,
   }): super( 
+        pVCtrl: pViewState.vCtrl,
         pState: LdAppBarState(
           pTitle: pTitle, pSubtitle: pSubtitle, 
           pLabel: pLabel, pTag: pTag?? WidgetKey.appBar.idx,
-          pVCtrl: pVCtrl,
+          pVCtrl: pViewState.vCtrl,
         )) {
-    ctrl = LdAppBarCtrl(pVCtrl: vCtrl, pState: state, pTag: pTag);
+    ctrl = LdAppBarCtrl(
+      pVCtrl: vCtrl, 
+      pState: state, 
+      pTag: pTag
+    );
   }
 }
 

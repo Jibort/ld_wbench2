@@ -4,20 +4,20 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:ld_wbench2/core/ld_view_state.dart';
-import 'package:ld_wbench2/widgets/ld_app_bar.dart';
+import 'package:ld_wbench2/widgets/ld_app_bar_widget.dart';
 import 'package:ld_wbench2/core/ld_widget.dart';
 import 'package:ld_wbench2/core/ld_widget_ctrl.dart';
 import 'package:ld_wbench2/core/ld_widget_state.dart';
 import 'package:ld_wbench2/views/widget_key.dart';
 
-// WIDGET 'LdScaffold' ================
-class LdScaffold
+// WIDGET 'LdScaffoldWidget' ==========
+class LdScaffoldWidget
 extends LdWidget {
   // ESTÀTICS -------------------------
   static const className = "LdScaffold";
 
   // CONSTRUCTORS ---------------------
-  LdScaffold({
+  LdScaffoldWidget({
     super.key,
     String? pTag,
     required LdViewState pViewState,
@@ -122,7 +122,7 @@ extends LdWidgetState {
 class LdScaffoldCtrl
 extends LdWidgetCtrl {
   // MEMBRES --------------------------
-  LdAppBar? _appBar;
+  LdAppBarWidget? _appBar;
   final LdWidget? btnFloatAction;
   final LdWidget? wgtBody;
   final FloatingActionButtonLocation? locBtnFloatAction;
@@ -241,7 +241,11 @@ extends LdWidgetCtrl {
   void onInit() {
     super.onInit();
     LdScaffoldState state = super.state as LdScaffoldState;
-    _appBar = LdAppBar(pTitle: state.title, pLabel: state.label, pVCtrl: viewCtrl);  
+    _appBar = LdAppBarWidget(
+      pTitle: state.title, 
+      pLabel: state.label, 
+      pViewState: viewCtrl.state as LdViewState,
+    );  
     (_appBar!.ctrl as LdAppBarCtrl).onInit(); 
   }
 

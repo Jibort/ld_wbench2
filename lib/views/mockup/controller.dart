@@ -5,12 +5,11 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:ld_wbench2/core/ld_view_ctrl.dart';
 import 'package:ld_wbench2/core/ld_view_state.dart';
-import 'package:ld_wbench2/tools/debug.dart';
 import 'package:ld_wbench2/views/mockup/state.dart';
 import 'package:ld_wbench2/views/widget_key.dart';
 import 'package:ld_wbench2/widgets/ld_container.dart';
 import 'package:ld_wbench2/widgets/ld_floating_action_button.dart';
-import 'package:ld_wbench2/widgets/ld_scaffold.dart';
+import 'package:ld_wbench2/widgets/ld_scaffold_widget.dart';
 
 // lib/views/mockup/controller.dart
 class MockupViewCtrl extends LdViewCtrl {
@@ -82,7 +81,7 @@ class MockupViewCtrl extends LdViewCtrl {
   Widget buildView(BuildContext pCtx) {
     final bodyWidget = _buildBody(pCtx);
     
-    return LdScaffold(
+    return LdScaffoldWidget(
       pViewState: state as LdViewState,
       pTitle: mockupState.title,
       pSubtitle: mockupState.subtitle,
