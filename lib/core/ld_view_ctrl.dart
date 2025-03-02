@@ -3,18 +3,18 @@
 
 import 'package:flutter/widgets.dart';
 import 'package:ld_wbench2/core/ld_ctrl.dart';
+import 'package:ld_wbench2/core/ld_view_state.dart';
 import 'package:ld_wbench2/tools/debug.dart';
 
 abstract class LdViewCtrl
-extends LdCtrl {
+extends LdCtrl<LdViewCtrl, LdViewState> {
 
-  // MEMBRES --------------------------
+  // 🧩 MEMBRES --------------------------
   final List<String> wgIds = <String>[];
 
-  // CONSTRUCTORS ---------------------
-  LdViewCtrl({ required super.pState, super.pTag }) {
+  // 🛠️ CONSTRUCTORS ---------------------
+  LdViewCtrl({ required super.pState, required super.pTag }) {
     if (state.isNew) {
-      Debug.debug(DebugLevel.debug_0, "[LdViewCtrl]: Forçant inicialització manual del controlador");
       state.loadData();
     }
   }
@@ -38,7 +38,6 @@ extends LdCtrl {
   @override
   void onInit() {
     super.onInit();
-    Debug.debug(DebugLevel.debug_1, "[onInit]: Iniciant el controlador ${runtimeType.toString()}.");
     
     // Aquesta crida no sembla fer-se mai.
     // state.loadData();
@@ -48,7 +47,6 @@ extends LdCtrl {
   @override
   void onReady() {
     super.onReady();
-    Debug.debug(DebugLevel.debug_1, "[onReady]: La interfície gràfica del controlador ${runtimeType.toString()} està completament carregada.");
   }
 
   // FUNCIONS ABSTRACTES --------------
@@ -57,9 +55,7 @@ extends LdCtrl {
   // Updates controlats.
   @override
   void notify({List<String>? pTgts}) {
-    Debug.debug(DebugLevel.debug_4, "${runtimeType.toString()}.notify(): Notificants Widgets...");
     List<String> tgts = pTgts ?? [...wgIds, tag];
     super.notify(pTgts: tgts);
-    Debug.debug(DebugLevel.debug_4, "${runtimeType.toString()}.notify(): ...Widgets notificats.");
   }
 }

@@ -17,7 +17,6 @@ enum DebugLevel {
   debug_8, debug_9,
 }
 
-
 class Debug {
   static Map<DebugLevel, bool> dLevels =  {
     DebugLevel.info: true,    DebugLevel.warn: true, 
@@ -56,7 +55,7 @@ class Debug {
   static void debug(DebugLevel pLevel, String pMsg) {
     if (dLevels[pLevel]!) {
       if (kDebugMode) {
-        print("DEBG[${pLevel.name}]: $pMsg");
+        print("DEBG[${pLevel.name}]: $pMsg\n");
       }
     }
   }

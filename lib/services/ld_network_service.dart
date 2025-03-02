@@ -10,7 +10,7 @@ class LdNetworkService extends LdService {
   // VARIABLES ------------------------
   // late final LdNetworkService _network;
 
-  // CONSTRUCTORS ---------------------
+  // 🛠️ CONSTRUCTORS ---------------------
   LdNetworkService(): super(pTag: className);
 
   Future<LdNetworkService> init() async {

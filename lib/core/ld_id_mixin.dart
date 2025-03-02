@@ -4,31 +4,43 @@
 import 'package:ld_wbench2/tools/debug.dart';
 
 mixin LdIdMixin {
+
   // 📝 STATICS ------------------------
-  static int counter = 0;
-  static get newId => counter++;
+  static int _counter = 0;
+  static int get counter => _counter;
+  static int get _newId => _counter++;
 
   // 🧩 MEMBRES ------------------------
-  final      int     _id = newId;
-  late final String? _typeName;
-  String? _tag;
+  final      int    _id = _newId;
+  late final String _typeName;
+  bool isTypeNameSet = false;
+  late final String _tag;
+  bool isTagSet = false;
 
   // 📥 GETTERS/SETTERS ----------------
   int get id => _id;
 
-  set typeName(String pTypeName) => _typeName = pTypeName;
-  String get typeName {
-    if (_typeName == null) {
-      var msg = "[LdId.typeName]: 'typeName' encara no ha estat informat!";
+  String get typeName => _typeName;
+  set typeName(String pTypeName) {
+    if (!isTypeNameSet) {
+      isTypeNameSet = true;
+      _typeName = pTypeName;
+    } else {
+      String msg = "El 'typeName' del tag '$tag' ja ha estat assignat prèviament!";
       Debug.fatal(msg, Exception(msg));
     }
-    return _typeName!;
   }
 
-  set tag(String pTag) => _tag = pTag;
-  String get tag {
-    _tag ??= '${typeName}_$id';
-    return _tag!;
+  String get tag => _tag;
+  set tag(String pTag)  {
+    if (!isTagSet) {
+      isTagSet = true;
+      _tag = pTag;
+    } else {
+      String msg = "El 'tag' del typeName '$typeName' ja ha estat assignat prèviament!";
+      Debug.fatal(msg, Exception(msg));
+    }
   }
-}
+
+} // mixin LdIdMixin
 

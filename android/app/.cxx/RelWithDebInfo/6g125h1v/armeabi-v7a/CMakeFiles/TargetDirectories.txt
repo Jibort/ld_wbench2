@@ -1,0 +1,2 @@
+C:/Projectes/ld_workbench/ld_wbench2/android/app/.cxx/RelWithDebInfo/6g125h1v/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Projectes/ld_workbench/ld_wbench2/android/app/.cxx/RelWithDebInfo/6g125h1v/armeabi-v7a/CMakeFiles/rebuild_cache.dir

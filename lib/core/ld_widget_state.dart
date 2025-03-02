@@ -2,41 +2,45 @@
 
 import 'package:ld_wbench2/core/ld_state.dart';
 import 'package:ld_wbench2/core/ld_view_ctrl.dart';
+import 'package:ld_wbench2/core/ld_view_state.dart';
 import 'package:ld_wbench2/core/ld_widget_ctrl.dart';
 import 'package:ld_wbench2/tools/debug.dart';
 
 abstract class LdWidgetState
-extends LdState {
-  // MEMBRES --------------------------
-  final LdViewCtrl _vCtrl;
-  String           _label;
-  LdWidgetCtrl?    _wCtrl;
+extends LdState<LdWidgetState, LdWidgetCtrl> {
+  // 🧩 MEMBRES --------------------------
+  final LdViewCtrl  _viewCtrl;
+  final LdViewState _viewState;
+  String            _label;
+  LdWidgetCtrl?     _widgetCtrl;
 
-  // CONSTRUCTORS ---------------------
+  // 🛠️ CONSTRUCTORS ---------------------
   LdWidgetState({
-    required super.pTag,
-    required String pLabel,
-    required LdViewCtrl pVCtrl,
+    required String      pLabel,
+    required LdViewState pViewState,
+    required LdViewCtrl  pViewCtrl,
   }):
     _label = pLabel,
-    _vCtrl = pVCtrl;
+    _viewState = pViewState,
+    _viewCtrl = pViewCtrl;
 
   // 📥 GETTERS/SETTERS ----------------
-  LdWidgetCtrl get wCtrl {
-    if (_wCtrl == null) {
+  LdWidgetCtrl get widgetCtrl {
+    if (_widgetCtrl == null) {
       String msg = "El controlador del widget encara no ha estat assignat.";
       Debug.fatal(msg, Exception(msg));
     }
-    return _wCtrl!;
+    return _widgetCtrl!;
   }
-  set wCtrl(LdWidgetCtrl pWCtrl) => _wCtrl = pWCtrl;
+  set widgetCtrl(LdWidgetCtrl pWCtrl) => _widgetCtrl = pWCtrl;
 
-  LdWidgetState get viewState => wCtrl.state as LdWidgetState;
+  LdViewState get viewState => _viewState;
+  LdViewCtrl get  viewCtrl  => _viewCtrl;
 
   String get label => _label;
   set label(String pLabel) { 
     _label = pLabel;
-    _vCtrl.notify(pTgts: [ wCtrl.tag ]);
+    _viewCtrl.notify(pTgts: [ widgetCtrl.tag ]);
   }
 
   // 'LdState' ------------------------
@@ -48,7 +52,6 @@ extends LdState {
   @override bool get isLoadingAgain   => (viewState.isLoadingAgain);
   @override bool get isError          => (super.errorCode != null);
 
-
-}
+} // abstract class LdWidgetState
 
 

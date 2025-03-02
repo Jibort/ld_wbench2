@@ -3,20 +3,22 @@
 
 // lib/widgets/ld_edit_widget.dart
 import 'package:flutter/material.dart';
+import 'package:ld_wbench2/core/ld_view_state.dart';
 import 'package:ld_wbench2/core/ld_widget.dart';
 import 'package:ld_wbench2/core/ld_widget_ctrl.dart';
 import 'package:ld_wbench2/core/ld_widget_state.dart';
 import 'package:ld_wbench2/tools/debug.dart';
 import 'package:ld_wbench2/tools/null_mang.dart';
 
-class LdEditWidget extends LdWidget {
+class   LdEditWidget
+extends LdWidget<LdEditWidgetState, LdEditWidgetCtrl> {
   // ESTÀTICS -------------------------
   static String className = "LdEditWidget";
 
-  // CONSTRUCTORS ---------------------
+  // 🛠️ CONSTRUCTORS ---------------------
   LdEditWidget({
     super.key,
-    String? pTag,
+    required String pTag,
     required String label,
     String? initialValue,
     String? hintText,
@@ -28,17 +30,18 @@ class LdEditWidget extends LdWidget {
     ValueChanged<String>? onSubmitted,
     FormFieldValidator<String>? validator,
     int? maxLength,
-    required super.pVCtrl,
+    required super.pViewCtrl,
+    required LdViewState pViewState,
   }) : super(
           pState: LdEditWidgetState(
-            pTag: pTag ?? 'edit_${DateTime.now().millisecondsSinceEpoch}',
             pLabel: label,
-            pVCtrl: pVCtrl,
-            pInitialValue: initialValue ?? '',
+            pViewCtrl: pViewCtrl,
+            pViewState: pViewState,
+            pInitialValue: initialValue ?? "",
           ),
         ) {
     ctrl = LdEditWidgetCtrl(
-      pVCtrl: vCtrl,
+      pViewCtrl: viewCtrl,
       pState: state,
       pTag: pTag,
       label: label,
@@ -55,23 +58,23 @@ class LdEditWidget extends LdWidget {
   }
   
   // METHODS --------------------------
-  String get text => (state as LdEditWidgetState).text;
-  set text(String value) => (state as LdEditWidgetState).text = value;
+  String get text        => state.text;
+  set text(String value) => state.text = value;
   
-  bool validate() => (ctrl as LdEditWidgetCtrl).validate();
-  void reset() => (ctrl as LdEditWidgetCtrl).reset();
+  bool validate() => ctrl.validate();
+  void reset()    => ctrl.reset();
 }
 
 class LdEditWidgetState extends LdWidgetState {
-  // MEMBRES --------------------------
-  String _text;
-  bool _isValid = true;
+  // 🧩 MEMBRES --------------------------
+  String  _text;
+  bool    _isValid = true;
   String? _errorText;
 
-  // CONSTRUCTORS ---------------------
+  // 🛠️ CONSTRUCTORS ---------------------
   LdEditWidgetState({
-    required super.pTag,
-    required super.pVCtrl,
+    required super.pViewCtrl,
+    required super.pViewState,
     required super.pLabel,
     required String pInitialValue,
   }) : _text = pInitialValue;
@@ -80,14 +83,13 @@ class LdEditWidgetState extends LdWidgetState {
   String get text => _text;
   set text(String value) {
     _text = value;
-    // Utilitzar ctrl en lloc de wCtrl, ja que això s'utilitza abans que wCtrl estigui assignat
-    ctrl.notify(pTgts: [ctrl.tag]);
+    ctrl.notify(pTgts: [ ctrl.tag ]);
   }
   
   bool get isValid => _isValid;
   set isValid(bool value) {
     _isValid = value;
-    ctrl.notify(pTgts: [ctrl.tag]);
+    ctrl.notify(pTgts: [ ctrl.tag ]);
 
   }
   
@@ -104,7 +106,7 @@ class LdEditWidgetState extends LdWidgetState {
 }
 
 class LdEditWidgetCtrl extends LdWidgetCtrl {
-  // MEMBRES --------------------------
+  // 🧩 MEMBRES --------------------------
   final String label;
   final String? hintText;
   final bool obscureText;
@@ -119,11 +121,11 @@ class LdEditWidgetCtrl extends LdWidgetCtrl {
   final TextEditingController _controller = TextEditingController();
   final GlobalKey<FormFieldState<String>> _fieldKey = GlobalKey<FormFieldState<String>>();
 
-  // CONSTRUCTORS ---------------------
+  // 🛠️ CONSTRUCTORS ---------------------
   LdEditWidgetCtrl({
-    required super.pVCtrl,
+    required super.pViewCtrl,
     required super.pState,
-    super.pTag,
+    required super.pTag,
     required this.label,
     this.hintText,
     required this.obscureText,
@@ -141,7 +143,6 @@ class LdEditWidgetCtrl extends LdWidgetCtrl {
     if (_fieldKey.currentState != null) {
       // Important: Assegurar-se que el validator s'executa
       if (validator == null) {
-        Debug.debug(DebugLevel.debug_2, "[${runtimeType.toString()}]: No s'ha proporcionat validator per aquest camp.");
         return true; // Si no hi ha validator, considerem el camp vàlid
       }
       
@@ -159,7 +160,6 @@ class LdEditWidgetCtrl extends LdWidgetCtrl {
       // Notificar el canvi
       notify(pTgts: [tag]);
       
-      Debug.debug(DebugLevel.debug_2, "[${runtimeType.toString()}]: Resultat de validació: $isValid");
       return isValid;
     } else {
       Debug.debug(DebugLevel.debug_2, "[${runtimeType.toString()}]: L'estat del camp no està inicialitzat!");
@@ -208,8 +208,6 @@ class LdEditWidgetCtrl extends LdWidgetCtrl {
         notify(pTgts: [tag]);
       }
     });
-    
-    Debug.debug(DebugLevel.debug_1, "[onInit.${runtimeType.toString()}]: El controlador del widget d'edició ha estat inicialitzat.");
   }
 
   @override
@@ -291,5 +289,4 @@ class LdEditWidgetCtrl extends LdWidgetCtrl {
       ],
     );
   }
-
-}
+} // class LdEditWidgetCtrl

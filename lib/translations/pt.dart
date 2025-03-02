@@ -1,4 +1,8 @@
+import 'package:ld_wbench2/translations/tr.dart';
+
 const Map<String, String> ptMap = {
-  "sabinaApp": "Aplicativo Sabina",
-    "sabinaWelcome": "Bem-vindo a Sabina.",
+  Tr.sabinaApp: "Aplicativo Sabina",
+  Tr.sabinaWelcome: "Bem-vindo a Sabina.",
+  Tr.loading: "Carregando",
+  Tr.of: "de",
 };

@@ -3,20 +3,20 @@
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:ld_wbench2/core/ld_view_state.dart';
 import 'package:ld_wbench2/core/ld_widget.dart';
 import 'package:ld_wbench2/core/ld_widget_ctrl.dart';
 import 'package:ld_wbench2/core/ld_widget_state.dart';
-import 'package:ld_wbench2/tools/debug.dart';
 import 'package:ld_wbench2/tools/null_mang.dart';
 
 class LdDatePickerWidget extends LdWidget {
   // ESTÀTICS -------------------------
   static String className = "LdDatePickerWidget";
 
-  // CONSTRUCTORS ---------------------
+  // 🛠️ CONSTRUCTORS ---------------------
   LdDatePickerWidget({
     super.key,
-    String? pTag,
+    required String pTag,
     required String label,
     DateTime? initialValue,
     String? hintText,
@@ -26,17 +26,18 @@ class LdDatePickerWidget extends LdWidget {
     String? dateFormat = 'dd/MM/yyyy',
     ValueChanged<DateTime?>? onChanged,
     FormFieldValidator<DateTime>? validator,
-    required super.pVCtrl,
+    required super.pViewCtrl,
+    required LdViewState pViewState,
   }) : super(
           pState: LdDatePickerWidgetState(
-            pTag: pTag ?? 'date_${DateTime.now().millisecondsSinceEpoch}',
             pLabel: label,
-            pVCtrl: pVCtrl,
+            pViewCtrl: pViewCtrl,
+            pViewState: pViewState,
             pInitialValue: initialValue,
           ),
         ) {
     ctrl = LdDatePickerWidgetCtrl(
-      pVCtrl: vCtrl,
+      pViewCtrl: viewCtrl,
       pState: state,
       pTag: pTag,
       label: label,
@@ -59,15 +60,15 @@ class LdDatePickerWidget extends LdWidget {
 }
 
 class LdDatePickerWidgetState extends LdWidgetState {
-  // MEMBRES --------------------------
+  // 🧩 MEMBRES --------------------------
   DateTime? _selectedDate;
   bool _isValid = true;
   String? _errorText;
 
-  // CONSTRUCTORS ---------------------
+  // 🛠️ CONSTRUCTORS ---------------------
   LdDatePickerWidgetState({
-    required super.pTag,
-    required super.pVCtrl,
+    required super.pViewCtrl,
+    required super.pViewState,
     required super.pLabel,
     DateTime? pInitialValue,
   }) : _selectedDate = pInitialValue;
@@ -98,7 +99,7 @@ class LdDatePickerWidgetState extends LdWidgetState {
 }
 
 class LdDatePickerWidgetCtrl extends LdWidgetCtrl {
-  // MEMBRES --------------------------
+  // 🧩 MEMBRES --------------------------
   final String label;
   final String? hintText;
   final bool enabled;
@@ -111,11 +112,11 @@ class LdDatePickerWidgetCtrl extends LdWidgetCtrl {
   final TextEditingController _controller = TextEditingController();
   final GlobalKey<FormFieldState<DateTime>> _fieldKey = GlobalKey<FormFieldState<DateTime>>();
 
-  // CONSTRUCTORS ---------------------
+  // 🛠️ CONSTRUCTORS ---------------------
   LdDatePickerWidgetCtrl({
-    required super.pVCtrl,
+    required super.pViewCtrl,
     required super.pState,
-    super.pTag,
+    required super.pTag,
     required this.label,
     this.hintText,
     required this.enabled,
@@ -198,7 +199,6 @@ class LdDatePickerWidgetCtrl extends LdWidgetCtrl {
   void onInit() {
     super.onInit();
     _updateDisplayText();
-    Debug.debug(DebugLevel.debug_1, "[onInit.${runtimeType.toString()}]: El controlador del widget de selecció de data ha estat inicialitzat.");
   }
 
   @override

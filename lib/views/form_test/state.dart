@@ -22,18 +22,18 @@ extends LdViewState {
           pSubtitle: pSubtitle
         );
 
-  // CONSTRUCTORS ---------------------
+  // 🛠️ CONSTRUCTORS ---------------------
   FormTestViewState({ required super.pTitle, super.pSubtitle });
 
   // MÈTODES ADDICIONALS -------------
   void updateFormData(String data) {
     formData = data;
-    vCtrl.notify();
+    viewCtrl.notify();
   }
   
   void setFormValidity(bool valid) {
     isFormValid = valid;
-    vCtrl.notify();
+    viewCtrl.notify();
   }
 
   @override

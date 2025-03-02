@@ -2,6 +2,7 @@
 // CreatedAt: 2025/02/27 dj. JIQ
 
 import 'package:flutter/material.dart';
+import 'package:ld_wbench2/core/ld_view_state.dart';
 import 'package:ld_wbench2/core/ld_widget.dart';
 import 'package:ld_wbench2/core/ld_widget_ctrl.dart';
 import 'package:ld_wbench2/core/ld_widget_state.dart';
@@ -11,10 +12,10 @@ class LdTimePickerWidget extends LdWidget {
   // ESTÀTICS -------------------------
   static String className = "LdTimePickerWidget";
 
-  // CONSTRUCTORS ---------------------
+  // 🛠️ CONSTRUCTORS ---------------------
   LdTimePickerWidget({
     super.key,
-    String? pTag,
+    required String pTag,
     required String label,
     TimeOfDay? initialValue,
     String? hintText,
@@ -23,17 +24,18 @@ class LdTimePickerWidget extends LdWidget {
     TimeOfDay? maxTime,
     ValueChanged<TimeOfDay?>? onChanged,
     FormFieldValidator<TimeOfDay>? validator,
-    required super.pVCtrl,
+    required super.pViewCtrl,
+    required LdViewState pViewState,
   }) : super(
           pState: LdTimePickerWidgetState(
-            pTag: pTag ?? 'time_${DateTime.now().millisecondsSinceEpoch}',
             pLabel: label,
-            pVCtrl: pVCtrl,
+            pViewCtrl: pViewCtrl,
+            pViewState: pViewState,
             pInitialValue: initialValue,
           ),
         ) {
     ctrl = LdTimePickerWidgetCtrl(
-      pVCtrl: vCtrl,
+      pViewCtrl: viewCtrl,
       pState: state,
       pTag: pTag,
       label: label,
@@ -55,15 +57,15 @@ class LdTimePickerWidget extends LdWidget {
 }
 
 class LdTimePickerWidgetState extends LdWidgetState {
-  // MEMBRES --------------------------
+  // 🧩 MEMBRES --------------------------
   TimeOfDay? _selectedTime;
   bool _isValid = true;
   String? _errorText;
 
-  // CONSTRUCTORS ---------------------
+  // 🛠️ CONSTRUCTORS ---------------------
   LdTimePickerWidgetState({
-    required super.pTag,
-    required super.pVCtrl,
+    required super.pViewCtrl,
+    required super.pViewState,
     required super.pLabel,
     TimeOfDay? pInitialValue,
   }) : _selectedTime = pInitialValue;
@@ -94,7 +96,7 @@ class LdTimePickerWidgetState extends LdWidgetState {
 }
 
 class LdTimePickerWidgetCtrl extends LdWidgetCtrl {
-  // MEMBRES --------------------------
+  // 🧩 MEMBRES --------------------------
   final String label;
   final String? hintText;
   final bool enabled;
@@ -106,11 +108,11 @@ class LdTimePickerWidgetCtrl extends LdWidgetCtrl {
   final TextEditingController _controller = TextEditingController();
   final GlobalKey<FormFieldState<TimeOfDay>> _fieldKey = GlobalKey<FormFieldState<TimeOfDay>>();
 
-  // CONSTRUCTORS ---------------------
+  // 🛠️ CONSTRUCTORS ---------------------
   LdTimePickerWidgetCtrl({
-    required super.pVCtrl,
+    required super.pViewCtrl,
     required super.pState,
-    super.pTag,
+    required super.pTag,
     required this.label,
     this.hintText,
     required this.enabled,
@@ -152,13 +154,13 @@ class LdTimePickerWidgetCtrl extends LdWidgetCtrl {
   }
   
   // Future method to show the time picker
-  Future<void> _selectTime(BuildContext context) async {
+  Future<void> _selectTime(BuildContext pBCtx) async {
     if (!enabled) return;
     
     final currentTime = (state as LdTimePickerWidgetState).selectedTime ?? TimeOfDay.now();
     
     final TimeOfDay? picked = await showTimePicker(
-      context: context,
+      context: pBCtx,
       initialTime: _isTimeWithinRange(currentTime) ? currentTime : 
                   (minTime != null ? minTime! : 
                   (maxTime != null ? maxTime! : TimeOfDay.now())),
@@ -191,11 +193,11 @@ class LdTimePickerWidgetCtrl extends LdWidgetCtrl {
         // Show error message about time range
         String errorMsg = '';
         if (minTime != null && maxTime != null) {
-          errorMsg = 'Si us plau, seleccioneu una hora entre ${minTime!.format(context)} i ${maxTime!.format(context)}';
+          errorMsg = 'Si us plau, seleccioneu una hora entre ${minTime!.format(pBCtx)} i ${maxTime!.format(pBCtx)}';
         } else if (minTime != null) {
-          errorMsg = 'Si us plau, seleccioneu una hora posterior a ${minTime!.format(context)}';
+          errorMsg = 'Si us plau, seleccioneu una hora posterior a ${minTime!.format(pBCtx)}';
         } else if (maxTime != null) {
-          errorMsg = 'Si us plau, seleccioneu una hora anterior a ${maxTime!.format(context)}';
+          errorMsg = 'Si us plau, seleccioneu una hora anterior a ${maxTime!.format(pBCtx)}';
         }
         (state as LdTimePickerWidgetState).errorText = errorMsg;
         // Notificar l'error perquè es mostri immediatament

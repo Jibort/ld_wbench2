@@ -4,10 +4,10 @@
 // ignore_for_file: unused_field
 
 class FiFo<T> {
-  // MEMBRES --------------------------
+  // 🧩 MEMBRES --------------------------
   final List<T> _list = <T>[];
   
-  // CONSTRUCTORS ---------------------
+  // 🛠️ CONSTRUCTORS ---------------------
   FiFo();
 
   // GETTERS i SETTERS ----------------

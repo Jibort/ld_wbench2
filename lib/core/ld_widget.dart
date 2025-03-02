@@ -5,43 +5,46 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:ld_wbench2/core/ld_id_mixin.dart';
 import 'package:ld_wbench2/core/ld_view_ctrl.dart';
+import 'package:ld_wbench2/core/ld_view_state.dart';
 import 'package:ld_wbench2/core/ld_widget_ctrl.dart';
 import 'package:ld_wbench2/core/ld_widget_state.dart';
 
-abstract class LdWidget<C extends LdWidgetCtrl>
+abstract class LdWidget<S extends LdWidgetState, C extends LdWidgetCtrl>
 extends GetWidget<C> 
 with    LdIdMixin {
 
   // 🧩 MEMBRES ------------------------
-  final LdViewCtrl        _vCtrl; // Cotrolador de la vista on es renderitza el Widget.
-  final LdWidgetState     _state; // Estat del Widget.
-  late final LdWidgetCtrl _ctrl;  // Controlador del Widget.
+  GetBuilder<LdViewCtrl>? _getBuilder;
+  final LdViewCtrl        _viewCtrl; // Cotrolador de la vista on es renderitza el Widget.
+  final S                 _state;    // Estat del Widget.
+  late final C            _ctrl;     // Controlador del Widget.
 
   // CONSTRUCTOR ------------------
   LdWidget({ 
     super.key, 
-    required LdViewCtrl pVCtrl, 
-    required LdWidgetState pState,
+    required LdViewCtrl pViewCtrl, 
+    required S          pState,
   }): 
-    _vCtrl = pVCtrl,
-    _state = pState;
-    // _ctrl =  pState.wCtrl;
+    _viewCtrl = pViewCtrl,
+    _state    = pState;
 
   // GETTERS/SETTERS ------------------
-  LdViewCtrl    get vCtrl => _vCtrl;
-  LdWidgetState get state => _state;
-  // set state(LdWidgetState pState) => _state = pState; 
-  LdWidgetCtrl  get ctrl  => _ctrl;
-  set ctrl(LdWidgetCtrl pCtrl) => _ctrl = pCtrl;
+  LdViewCtrl    get viewCtrl  => _viewCtrl;
+  LdViewState   get viewState => _viewCtrl.state;
+
+  S get state => _state;
+  C  get ctrl  => _ctrl;
+  set ctrl(C pCtrl) { _ctrl = pCtrl; state.ctrl = _ctrl; }
 
   // CONSTRUCCIÓ DE LA VISTA ----------
   @override
   Widget build(BuildContext pCtx) {
-    return GetBuilder<LdWidgetCtrl>(
+    _getBuilder ??= GetBuilder<LdViewCtrl>( // GetBuilder<LdViewCtrl>(
       id: ctrl.tag,
       tag: ctrl.tag,
-      init: ctrl,
-      builder: (pWCtrl) => pWCtrl.buildWidget(pCtx),
+      init: viewCtrl,
+      builder: (pWCtrl) => _ctrl.buildWidget(pCtx),
     );
+    return _getBuilder!; 
   }
 }

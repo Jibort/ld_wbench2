@@ -9,20 +9,20 @@ import 'package:ld_wbench2/core/ld_widget_ctrl.dart';
 import 'package:ld_wbench2/core/ld_widget_state.dart';
 import 'package:ld_wbench2/views/widget_key.dart';
 import 'package:ld_wbench2/widgets/ld_app_bar_widget.dart';
-import 'package:ld_wbench2/tools/debug.dart';
 
 // WIDGET 'LdScaffoldWidget' ==========
 class LdScaffoldWidget extends LdWidget {
   // ESTÀTICS -------------------------
   static const className = "LdScaffold";
 
-  // CONSTRUCTORS ---------------------
+  // 🛠️ CONSTRUCTORS ---------------------
   LdScaffoldWidget({
     super.key,
     String? pTag,
     required LdViewState pViewState,
     required String pTitle,
     String? pSubtitle,
+    List<Widget>? pActions,
     LdWidget? btnFloatAction,
     LdWidget? wgtBody,
     FloatingActionButtonLocation? locBtnFloatAction,
@@ -46,12 +46,12 @@ class LdScaffoldWidget extends LdWidget {
     bool endDrawerEnableOpenDragGesture = true,
     String? restorationId,
   }): super(
-    pVCtrl: pViewState.vCtrl,
+    pViewCtrl: pViewState.viewCtrl,
     pState: LdScaffoldState(
-      pTag: pTag ?? WidgetKey.scaffold.idx,
       pTitle: pTitle,
       pSubtitle: pSubtitle,
-      pVCtrl: pViewState.vCtrl,
+      pViewCtrl: pViewState.viewCtrl,
+      pViewState: pViewState,
       pLabel: className
     )) {
     tag = pTag ?? WidgetKey.scaffold.idx;
@@ -60,10 +60,13 @@ class LdScaffoldWidget extends LdWidget {
     // Crear explícitament el controlador amb tots els paràmetres
     ctrl = LdScaffoldCtrl(
       pTag: tag,
-      pVCtrl: pViewState.vCtrl,
+      pViewCtrl: pViewState.viewCtrl,
       pState: state,
       pTitle: pTitle,
       pSubtitle: pSubtitle,
+      actions: pActions,
+      showDrawerIcon: true,
+      showBackButton: false,
       btnFloatAction: btnFloatAction,
       wgtBody: wgtBody,
       locBtnFloatAction: locBtnFloatAction,
@@ -92,7 +95,7 @@ class LdScaffoldWidget extends LdWidget {
 
 // ESTAT 'LdScaffoldState' ============
 class LdScaffoldState extends LdWidgetState {
-  // MEMBRES --------------------------
+  // 🧩 MEMBRES --------------------------
   String _title;
   String? _subtitle;
 
@@ -105,12 +108,12 @@ class LdScaffoldState extends LdWidgetState {
     ctrl.notify(pTgts: [ ctrl.tag ]);    
   }
 
-  // CONSTRUCTORS ---------------------
+  // 🛠️ CONSTRUCTORS ---------------------
   LdScaffoldState({
     required String pTitle, 
     String? pSubtitle, 
-    required super.pTag, 
-    required super.pVCtrl, 
+    required super.pViewCtrl, 
+    required super.pViewState,
     required super.pLabel, 
   }): 
     _title = pTitle,
@@ -124,9 +127,12 @@ class LdScaffoldState extends LdWidgetState {
 
 // CTRL 'LdScaffoldCtrl' ==============
 class LdScaffoldCtrl extends LdWidgetCtrl {
-  // MEMBRES --------------------------
+  // 🧩 MEMBRES --------------------------
   final String _title;
   final String? _subtitle;
+  bool showDrawerIcon;
+  bool showBackButton;
+  final List<Widget>? actions;
   final LdWidget? btnFloatAction;
   final LdWidget? wgtBody;
   final FloatingActionButtonLocation? locBtnFloatAction;
@@ -151,15 +157,18 @@ class LdScaffoldCtrl extends LdWidgetCtrl {
   final String? restorationId;
   
   // AppBar dedicat
-  LdAppBarWidget? _appBar;
+  late final LdAppBarWidget? _appBar;
 
-  // CONSTRUCTORS ---------------------
+  // 🛠️ CONSTRUCTORS ---------------------
   LdScaffoldCtrl({
     required super.pTag, 
-    required super.pVCtrl, 
+    required super.pViewCtrl, 
     required super.pState,
     required String pTitle, 
     String? pSubtitle,
+    this.actions,
+    this.showDrawerIcon = false,
+    this.showBackButton = false,
     this.btnFloatAction,
     this.wgtBody,
     this.locBtnFloatAction,
@@ -186,32 +195,20 @@ class LdScaffoldCtrl extends LdWidgetCtrl {
     _title = pTitle,
     _subtitle = pSubtitle {
       // Inicialitzem explícitament l'AppBar
-      _appBar ??= LdAppBarWidget(
+      _appBar = LdAppBarWidget(
+        pTag: WidgetKey.appBar.idx,
         pTitle: _title, 
         pSubtitle: _subtitle,
-        pLabel: 'AppBar', 
-        pViewState: viewCtrl.state as LdViewState,
+        pViewState: viewCtrl.state,
+        showDrawerIcon: showDrawerIcon,
+        showBackButton: showBackButton,
+        pActions: actions,
       );
     }
   
   // GETTERS/SETTERS ------------------
   @override
   LdScaffoldState get state => super.state as LdScaffoldState;
-
-  @override
-  void onInit() {
-    super.onInit();
-    
-    // // Inicialitzem explícitament l'AppBar
-    // _appBar ??= LdAppBarWidget(
-    //   pTitle: _title, 
-    //   pSubtitle: _subtitle,
-    //   pLabel: 'AppBar', 
-    //   pViewState: viewCtrl.state as LdViewState,
-    // );
-    
-    Debug.debug(DebugLevel.debug_0, "[LdScaffoldCtrl.onInit]: AppBar creada amb títol: $_title");
-  }
 
   // 'LdWidgetCtrl' -------------------
   @override
@@ -221,8 +218,6 @@ class LdScaffoldCtrl extends LdWidgetCtrl {
       preferredSize: Size.fromHeight(kToolbarHeight),
       child: _appBar!.build(pCtx),
     );
-    
-    Debug.debug(DebugLevel.debug_0, "[LdScaffoldCtrl.buildWidget]: Construint Scaffold amb AppBar");
     
     // Obtenim els widgets reals des de LdWidget
     final bodyWidget = wgtBody != null 

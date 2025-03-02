@@ -11,7 +11,7 @@ class LdAuthService extends LdService {
   // VARIABLES ------------------------
   // late final LdAuthService _auth;
 
-  // CONSTRUCTORS ---------------------
+  // 🛠️ CONSTRUCTORS ---------------------
   LdAuthService(): super(pTag: className);
 
   Future<LdAuthService> init() async {

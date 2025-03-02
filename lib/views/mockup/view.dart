@@ -9,7 +9,7 @@ export 'controller.dart';
 export 'state.dart';
 
 class MockupView
-extends LdView<MockupViewCtrl> {
+extends LdView<MockupViewState, MockupViewCtrl> {
   // ESTÀTICS --------------------------
   static const className = 'MockupView';
 

@@ -7,7 +7,7 @@ import 'controller.dart';
 export 'controller.dart';
 export 'state.dart';
 
-class BasicTestView extends LdView<BasicTestViewCtrl> {
+class BasicTestView extends LdView<BasicTestViewState, BasicTestViewCtrl> {
   // ESTÀTICS --------------------------
   static const className = 'BasicTestView';
 

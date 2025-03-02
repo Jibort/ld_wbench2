@@ -12,8 +12,9 @@ extends FullLifeCycleController
 with    LdIdMixin {
   // ESTÀTICS -------------------------
   static const className = "LdSabinaCtrl";
+  static final LdSabinaController  inst = LdSabinaController();
 
-  // MEMBRES --------------------------
+  // 🧩 MEMBRES --------------------------
   final LdSecureStorageService _secStg = LdSecureStorageService.inst; // LdController.find(LdSecureStorageService.className) as LdSecureStorageService;
 
   // CONSTRUCTOR ----------------------
@@ -21,7 +22,6 @@ with    LdIdMixin {
     tag = className;
     Get.put(this, tag: tag);
     var _ = _secStg;
-    Debug.debug(DebugLevel.debug_0, "[LdSabinaController]: ...controlador '$tag' creat.");
   }
 
   // 🔹 GESTIÓ DEL TEMA ----------------

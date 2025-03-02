@@ -15,7 +15,9 @@ class Tr extends Translations {
   // Claus constants.
   static const sabinaApp = "sabinaApp";
   static const sabinaWelcome = "sabinaWelcome";
-
+  static const loading = "loading";
+  static const of = "of";
+  
   static final Tr inst = Tr();
   static const Map<String, Map<String, String>> _keys = {
     'ca': caMap, 

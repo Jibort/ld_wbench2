@@ -3,8 +3,8 @@
 
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:ld_wbench2/core/ld_ctrl.dart';
 import 'package:ld_wbench2/core/ld_view_ctrl.dart';
-import 'package:ld_wbench2/core/ld_view_state.dart';
 import 'package:ld_wbench2/views/mockup/state.dart';
 import 'package:ld_wbench2/views/widget_key.dart';
 import 'package:ld_wbench2/widgets/ld_container.dart';
@@ -14,6 +14,7 @@ import 'package:ld_wbench2/widgets/ld_scaffold_widget.dart';
 // lib/views/mockup/controller.dart
 class MockupViewCtrl extends LdViewCtrl {
   // MEMBRES ADDICIONALS -------------
+  GetBuilder<LdViewCtrl>? getBuilder;
   final textController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
@@ -82,11 +83,13 @@ class MockupViewCtrl extends LdViewCtrl {
     final bodyWidget = _buildBody(pCtx);
     
     return LdScaffoldWidget(
-      pViewState: state as LdViewState,
+      pViewState: state,
       pTitle: mockupState.title,
       pSubtitle: mockupState.subtitle,
       btnFloatAction: LdFloatingActionButton(
-        pVCtrl: this,
+        pTag: "btnAddElement",
+        pViewCtrl: this,
+        pViewState: state,
         onPressed: () => showAddItemDialog(pCtx),
         icon: Icon(Icons.add),
         tooltip: 'Afegir element',
@@ -94,17 +97,19 @@ class MockupViewCtrl extends LdViewCtrl {
         foregroundColor: Get.theme.colorScheme.onPrimary,
       ),
       wgtBody: LdContainer(
-        pVCtrl: this,
+        pTag: "${tag}_",
+        pViewCtrl: this,
+        pViewState: state,
         child: bodyWidget,
       ),
     );
   }
   Widget _buildBody(BuildContext pCtx) {
-    return GetBuilder<MockupViewCtrl>(
+    getBuilder ??= GetBuilder<LdViewCtrl>( // GetBuilder<MockupViewCtrl>(
       id: WidgetKey.pageBody.idx,
       tag: WidgetKey.pageBody.idx,
       init: this,
-      builder: (MockupViewCtrl vCtrl) {
+      builder: (LdCtrl vCtrl) {
         if (state.isNew || state.isLoading || state.isLoadingAgain) {
           return Center(child: CircularProgressIndicator());
         } else {
@@ -141,6 +146,7 @@ class MockupViewCtrl extends LdViewCtrl {
         }
       },
     );
+    return getBuilder!;
   }
 
   Widget _buildListView() {

@@ -1,18 +1,27 @@
-// lib/views/basic_test/controller.dart
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:ld_wbench2/core/ld_view_ctrl.dart';
+import 'package:ld_wbench2/ld_sabina_controller.dart';
 import 'package:ld_wbench2/views/basic_test/state.dart';
 import 'package:ld_wbench2/views/widget_key.dart';
+import 'package:ld_wbench2/widgets/ld_action_button_widget.dart';
 import 'package:ld_wbench2/widgets/ld_container.dart';
 import 'package:ld_wbench2/widgets/ld_scaffold_widget.dart';
-import 'package:ld_wbench2/tools/debug.dart';
 
-class BasicTestViewCtrl extends LdViewCtrl {
+class   BasicTestViewCtrl 
+extends LdViewCtrl {
+  // 🧩 MEMBRES ------------------------
+  GetBuilder<LdViewCtrl>? getBuilder;
+
   // 🛠️ CONSTRUCTORS -------------------
-  BasicTestViewCtrl({ required String pTag, required super.pState }): super(pTag: pTag) {
+  BasicTestViewCtrl({ 
+    required super.pTag, 
+    required super.pState 
+  }) {
     addWidgets([
       WidgetKey.scaffold.idx,
       WidgetKey.appBar.idx,
+      WidgetKey.appBarProgress.idx,
       WidgetKey.pageBody.idx,
     ]);
   }
@@ -23,38 +32,171 @@ class BasicTestViewCtrl extends LdViewCtrl {
   // 'LdViewCtrl' ---------------------
   @override
   Widget buildView(BuildContext pCtx) {
-    Debug.debug(DebugLevel.debug_0, "[BasicTestViewCtrl.buildView]: Construint vista bàsica");
-    
-    // Usem el nou LdScaffoldWidget i LdAppBarWidget
+    getBuilder ??= GetBuilder<LdViewCtrl>( // GetBuilder<BasicTestViewCtrl>(
+      id: WidgetKey.pageBody.idx,
+      tag: WidgetKey.pageBody.idx,
+      init: this as LdViewCtrl,
+      builder: (ctrl) => _buildContent(pCtx),
+    );
+
     return LdScaffoldWidget(
       pViewState: testState,
       pTitle: testState.title,
       pSubtitle: testState.subtitle,
-      wgtBody: LdContainer(
-        pVCtrl: this,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Això és una prova bàsica de LdScaffold amb LdAppBar',
-                style: TextStyle(fontSize: 18),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  // Canviar el títol per comprovar l'actualització
-                  testState.setTitles(
-                    pTitle: 'Títol Actualitzat', 
-                    pSubtitle: 'Prova d\'actualització'
-                  );
-                },
-                child: Text('Canviar títol'),
-              ),
-            ],
-          ),
+      pActions: [ 
+        LdActionButtonWidget(
+          pTag: "btnToogleTheme",
+          pViewCtrl: this,
+          icon: Icons.mode_night_outlined,
+          onPressed: () => LdSabinaController.inst.toggleTheme(), 
+          label: "btnToogleTheme", 
+          pViewState: state, 
         ),
+      ],
+      btnFloatAction: LdActionButtonWidget(
+        pTag: "btnToogleTheme_2",
+        pViewCtrl: this,
+        icon: Icons.mode_night_outlined,
+        onPressed: () => LdSabinaController.inst.toggleTheme(),
+        label: "btnToogleTheme_2", 
+        pViewState: state, 
+      ),
+      wgtBody: LdContainer(
+        pTag: "${tag}_LdScaffoldWidget",
+        pViewCtrl: this,
+        pViewState: state,
+        child: getBuilder!,
+      ),
+    );
+  }
+  
+  Widget _buildContent(BuildContext context) {
+    final bool isLoading = testState.isLoading || testState.isPreparing;
+
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _buildLoadableSection(
+              context, 
+              isLoading: isLoading,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Informació bàsica', 
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                  const SizedBox(height: 16),
+                  _buildLoadableTextField(
+                    context, 
+                    isLoading: isLoading, 
+                    label: 'Nom',
+                  ),
+                  const SizedBox(height: 16),
+                  _buildLoadableTextField(
+                    context, 
+                    isLoading: isLoading, 
+                    label: 'Correu electrònic',
+                  ),
+                ],
+              ),
+            ),
+            
+            const SizedBox(height: 16),
+            
+            _buildLoadableSection(
+              context, 
+              isLoading: isLoading,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Detalls addicionals', 
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                  const SizedBox(height: 16),
+                  _buildLoadableTextField(
+                    context, 
+                    isLoading: isLoading, 
+                    label: 'Telèfon',
+                  ),
+                  const SizedBox(height: 16),
+                  _buildLoadableTextField(
+                    context, 
+                    isLoading: isLoading, 
+                    label: 'Adreça',
+                  ),
+                ],
+              ),
+            ),
+            
+            if (!isLoading)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: ElevatedButton(
+                  onPressed: () => testState.reset(),
+                  child: const Text('Recarregar'),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoadableSection(
+    BuildContext context, {
+    required bool isLoading,
+    required Widget child,
+  }) {
+    return Card(
+      child: Stack(
+        children: [
+          Opacity(
+            opacity: isLoading ? 0.3 : 1.0,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: child,
+            ),
+          ),
+          if (isLoading)
+            Positioned.fill(
+              child: IgnorePointer(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white.withAlpha(100),
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.grey.shade200.withAlpha(100),
+                        Colors.grey.shade300.withAlpha(100),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLoadableTextField(
+    BuildContext context, {
+    required bool isLoading,
+    required String label,
+  }) {
+    return TextField(
+      enabled: !isLoading,
+      decoration: InputDecoration(
+        labelText: label,
+        border: const OutlineInputBorder(),
+        filled: isLoading,
+        fillColor: isLoading ? Colors.grey[200] : null,
       ),
     );
   }

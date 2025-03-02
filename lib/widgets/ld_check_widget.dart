@@ -2,37 +2,38 @@
 // CreatedAt: 2025/02/27 dj. JIQ
 
 import 'package:flutter/material.dart';
+import 'package:ld_wbench2/core/ld_view_state.dart';
 import 'package:ld_wbench2/core/ld_widget.dart';
 import 'package:ld_wbench2/core/ld_widget_ctrl.dart';
 import 'package:ld_wbench2/core/ld_widget_state.dart';
-import 'package:ld_wbench2/tools/debug.dart';
 import 'package:ld_wbench2/tools/null_mang.dart';
 
 class LdCheckWidget extends LdWidget {
   // ESTÀTICS -------------------------
   static String className = "LdCheckWidget";
 
-  // CONSTRUCTORS ---------------------
+  // 🛠️ CONSTRUCTORS ---------------------
   LdCheckWidget({
     super.key,
-    String? pTag,
+    required String pTag,
     required String label,
     bool initialValue = false,
     bool tristate = false,
     bool enabled = true,
     ValueChanged<bool?>? onChanged,
     FormFieldValidator<bool>? validator,
-    required super.pVCtrl,
+    required super.pViewCtrl,
+    required LdViewState pViewState,
   }) : super(
           pState: LdCheckWidgetState(
-            pTag: pTag ?? 'check_${DateTime.now().millisecondsSinceEpoch}',
             pLabel: label,
-            pVCtrl: pVCtrl,
+            pViewCtrl: pViewCtrl,
+            pViewState: pViewState,
             pInitialValue: initialValue,
           ),
         ) {
     ctrl = LdCheckWidgetCtrl(
-      pVCtrl: vCtrl,
+      pViewCtrl: viewCtrl,
       pState: state,
       pTag: pTag,
       label: label,
@@ -52,15 +53,15 @@ class LdCheckWidget extends LdWidget {
 }
 
 class LdCheckWidgetState extends LdWidgetState {
-  // MEMBRES --------------------------
+  // 🧩 MEMBRES --------------------------
   bool _value;
   bool _isValid = true;
   String? _errorText;
 
-  // CONSTRUCTORS ---------------------
+  // 🛠️ CONSTRUCTORS ---------------------
   LdCheckWidgetState({
-    required super.pTag,
-    required super.pVCtrl,
+    required super.pViewCtrl,
+    required super.pViewState,
     required super.pLabel,
     required bool pInitialValue,
   }) : _value = pInitialValue;
@@ -91,7 +92,7 @@ class LdCheckWidgetState extends LdWidgetState {
 }
 
 class LdCheckWidgetCtrl extends LdWidgetCtrl {
-  // MEMBRES --------------------------
+  // 🧩 MEMBRES --------------------------
   final String label;
   final bool tristate;
   final bool enabled;
@@ -100,11 +101,11 @@ class LdCheckWidgetCtrl extends LdWidgetCtrl {
   
   final GlobalKey<FormFieldState<bool>> _fieldKey = GlobalKey<FormFieldState<bool>>();
 
-  // CONSTRUCTORS ---------------------
+  // 🛠️ CONSTRUCTORS ---------------------
   LdCheckWidgetCtrl({
-    required super.pVCtrl,
+    required super.pViewCtrl,
     required super.pState,
-    super.pTag,
+    required super.pTag,
     required this.label,
     required this.tristate,
     required this.enabled,
@@ -141,7 +142,6 @@ class LdCheckWidgetCtrl extends LdWidgetCtrl {
   @override
   void onInit() {
     super.onInit();
-    Debug.debug(DebugLevel.debug_1, "[onInit.${runtimeType.toString()}]: El controlador del widget checkbox ha estat inicialitzat.");
   }
 
   @override

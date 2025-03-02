@@ -2,10 +2,10 @@
 // createdAt: 25/02/15 ds. JIQ
 
 class LoadSteps {
-  // MEMBRES --------------------------
+  // 🧩 MEMBRES --------------------------
   final _steps = <LoadStep>[];
 
-  // CONSTRUCTORS ---------------------
+  // 🛠️ CONSTRUCTORS ---------------------
   LoadSteps();
 
   // GETTERS i SETTERS ----------------
@@ -17,19 +17,22 @@ class LoadSteps {
 
 // Definició d'un LoadStep.
 class LoadStep {
-  // MEMBRES -------------------------
+  // 🧩 MEMBRES -------------------------
   final String _index;
   final String _title;
   final String? _description;
+  final List<String>? _upds;
 
-  // CONSTRUCTORS --------------------
-  LoadStep({required String pIdx, required String pTitle, String? pDesc})
+  // 🛠️ CONSTRUCTORS --------------------
+  LoadStep({ required String pIdx, required String pTitle, String? pDesc, List<String>? pUpds })
       : _index = pIdx,
         _title = pTitle,
-        _description = pDesc;
+        _description = pDesc,
+        _upds = pUpds;
 
   // GETTERS i SETTERS ---------------
-  String get index => _index;
-  String get title => _title;
+  String  get index       => _index;
+  String  get title       => _title;
   String? get description => _description;
+  List<String>? get upds  => _upds;
 }

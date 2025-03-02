@@ -2,6 +2,7 @@
 // CreatedAt: 2025/02/27 dj. JIQ
 
 import 'package:flutter/material.dart';
+import 'package:ld_wbench2/core/ld_view_state.dart';
 import 'package:ld_wbench2/core/ld_widget.dart';
 import 'package:ld_wbench2/core/ld_widget_ctrl.dart';
 import 'package:ld_wbench2/core/ld_widget_state.dart';
@@ -12,10 +13,10 @@ extends LdWidget {
   // ESTÀTICS -------------------------
   static String className = "LdContainer";
 
-  // CONSTRUCTORS ---------------------
+  // 🛠️ CONSTRUCTORS ---------------------
   LdContainer({
     super.key,
-    String? pTag,
+    required String pTag,
     required Widget child,
     EdgeInsetsGeometry? padding,
     EdgeInsetsGeometry? margin,
@@ -26,15 +27,16 @@ extends LdWidget {
     double? borderWidth = 1.0,
     Color? borderColor,
     bool showBorder = false,
-    required super.pVCtrl,
+    required super.pViewCtrl,
+    required LdViewState pViewState,
   }) : super(
     pState: LdContainerState(
-      pTag: pTag ?? 'container_${DateTime.now().millisecondsSinceEpoch}',
       pLabel: label ?? 'Container',
-      pVCtrl: pVCtrl,
+      pViewCtrl: pViewCtrl,
+      pViewState: pViewState,  
     )) {
     ctrl = LdContainerCtrl(
-      pVCtrl: vCtrl,
+      pViewCtrl: viewCtrl,
       pState: state,
       pTag: pTag,
       child: child,
@@ -52,10 +54,10 @@ extends LdWidget {
 }
 
 class LdContainerState extends LdWidgetState {
-  // CONSTRUCTORS ---------------------
+  // 🛠️ CONSTRUCTORS ---------------------
   LdContainerState({
-    required super.pTag,
-    required super.pVCtrl,
+    required super.pViewCtrl,
+    required super.pViewState,
     required super.pLabel,
   });
 
@@ -66,7 +68,7 @@ class LdContainerState extends LdWidgetState {
 }
 
 class LdContainerCtrl extends LdWidgetCtrl {
-  // MEMBRES --------------------------
+  // 🧩 MEMBRES --------------------------
   final Widget child;
   final EdgeInsetsGeometry? padding;
   final EdgeInsetsGeometry? margin;
@@ -78,11 +80,11 @@ class LdContainerCtrl extends LdWidgetCtrl {
   final Color? borderColor;
   final bool showBorder;
 
-  // CONSTRUCTORS ---------------------
+  // 🛠️ CONSTRUCTORS ---------------------
   LdContainerCtrl({
-    required super.pVCtrl,
+    required super.pViewCtrl,
     required super.pState,
-    super.pTag,
+    required super.pTag,
     required this.child,
     this.padding,
     this.margin,

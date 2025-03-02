@@ -3,21 +3,19 @@
 
 import 'package:ld_wbench2/core/ld_service.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:ld_wbench2/tools/debug.dart';
 
 class LdSecureStorageService extends LdService {
   // ESTÀTICS -------------------------
   static LdSecureStorageService inst = LdSecureStorageService();
   static const className = "LdSecureStorageService";
 
-  // MEMBRES --------------------------
+  // 🧩 MEMBRES --------------------------
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
-// CONSTRUCTORS ---------------------
+// 🛠️ CONSTRUCTORS ---------------------
   LdSecureStorageService(): super(pTag: className);
 
   Future<LdSecureStorageService> init() async {
-    Debug.debug(DebugLevel.debug_5, "[LdSecureStorageService]: Iniciant servei...");
     return this;
   }
 

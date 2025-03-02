@@ -14,10 +14,10 @@ class LdSabinaApplication extends StatelessWidget {
   // ESTÀTICS -------------------------
   static const className = "LdSabinaApp";
 
-  // MEMBRES --------------------------
+  // 🧩 MEMBRES --------------------------
   final LdSabinaController _sCtrl;
 
-  // CONSTRUCTORS ---------------------
+  // 🛠️ CONSTRUCTORS ---------------------
   const LdSabinaApplication({super.key, required LdSabinaController pSCtrl}): _sCtrl = pSCtrl;
 
   // 'StatelessWidget' ----------------

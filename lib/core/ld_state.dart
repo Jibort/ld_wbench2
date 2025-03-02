@@ -26,7 +26,10 @@ typedef FnExc = Future<(Exception?, bool)> Function(Exception? pExc);
 typedef FnStep = Future<Exception?> Function(FiFo pQueue, List<dynamic> pArgs);
 typedef FnThen = Exception? Function(FiFo pQueue);
 
-abstract class LdState {
+abstract class LdState<
+  S extends LdState<S, C>, 
+  C extends LdCtrl<C, S>> {
+
   // 📝 ESTÀTICS -----------------------
   static const className = "LdState";
 
@@ -34,21 +37,20 @@ abstract class LdState {
   String? _errorCode;
   String? _errorMessage;
   Exception? _exception;
-  late LdCtrl _ctrl;
+  late C _ctrl;
+  // bool _isCSet = false;
   Function(FiFo pQueue)? _onAltered;
   final _queue = FiFo();
   int _length = 0;
   int _dids = 0;
  
   // 🛠️ CONSTRUCTORS -------------------
-  LdState({ String? pTag, String? pErrorCode, String? pErrorMessage, Exception? pException })
-  : _errorCode = pErrorCode, _errorMessage = pErrorMessage, _exception = pException {
-    Debug.debug(DebugLevel.debug_0, "[LdState]: ...creat.");
-  }
+  LdState({ String? pErrorCode, String? pErrorMessage, Exception? pException })
+  : _errorCode = pErrorCode, _errorMessage = pErrorMessage, _exception = pException;
 
   // 📥 GETTERS/SETTERS ----------------
-  LdCtrl get ctrl => _ctrl;
-  set ctrl(LdCtrl pCtrl) => _ctrl = pCtrl;
+  C get ctrl        => _ctrl;
+  set ctrl(C pCtrl) => _ctrl = pCtrl;
 
   String? get errorCode => _errorCode;
   String? get errorMessage => _errorMessage;
@@ -156,10 +158,12 @@ abstract class LdState {
     while (isNotNull(obj)) {
       switch (obj) {
         case LoadStep loadStep:
-          (isNotNull(loadStep.description)) ? Debug.debug(DebugLevel.debug_2, '''
-Step[${loadStep.index}]: ${loadStep.title}
-    ${loadStep.description}
-''') : Debug.debug(DebugLevel.debug_2, "Step[${loadStep.index}]: ${loadStep.title}");
+          (isNotNull(loadStep.description)) 
+            ? Debug.debug(DebugLevel.debug_2, 'Step[${loadStep.index}]: ${loadStep.title} ${loadStep.description}') 
+            : Debug.debug(DebugLevel.debug_2, "Step[${loadStep.index}]: ${loadStep.title}");
+          if (isNotNull(loadStep.upds)) {
+            ctrl.notify(pTgts: loadStep.upds!);
+          }
           break;
         case FnThen fnThen:
           fthen = fnThen;

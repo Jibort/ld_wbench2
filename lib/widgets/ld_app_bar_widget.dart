@@ -1,74 +1,68 @@
 // Especialització d'AppBar per a l'aplicació Sabina.
 // CreatedAt: 2025/02/16 dg. GPT[JIQ]
 
-// lib/widgets/ld_app_bar_widget.dart
-// Especialització d'AppBar per a l'aplicació Sabina.
-// Revisió i simplificació per a corregir problemes.
-
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:ld_wbench2/core/ld_view_ctrl.dart';
 import 'package:ld_wbench2/core/ld_view_state.dart';
 import 'package:ld_wbench2/core/ld_widget.dart';
 import 'package:ld_wbench2/core/ld_widget_ctrl.dart';
 import 'package:ld_wbench2/core/ld_widget_state.dart';
-import 'package:ld_wbench2/tools/debug.dart';
+import 'package:ld_wbench2/translations/tr.dart';
 import 'package:ld_wbench2/views/widget_key.dart';
 
 // WIDGET 'LdAppBarWidget' ============
-class LdAppBarWidget extends LdWidget {
+class LdAppBarWidget 
+extends LdWidget {
   // ESTÀTICS -------------------------
   static String className = "LdAppBar";
 
-  // CONSTRUCTORS ---------------------
+  // 🛠️ CONSTRUCTORS ---------------------
   LdAppBarWidget({
     super.key, 
-    String? pTag,
+    required String pTag,
     required LdViewState pViewState,
     required String pTitle, 
     String? pSubtitle, 
-    String? pLabel, 
     bool showDrawerIcon = false,
     bool showBackButton = false,
     List<Widget>? pActions,
   }): super( 
-        pVCtrl: pViewState.vCtrl,
+        pViewCtrl: pViewState.viewCtrl,
         pState: LdAppBarState(
+          pViewCtrl: pViewState.viewCtrl,
+          pViewState: pViewState,
           pTitle: pTitle, 
           pSubtitle: pSubtitle, 
-          pLabel: pLabel ?? "AppBar",
-          pTag: pTag ?? WidgetKey.appBar.idx,
-          pVCtrl: pViewState.vCtrl,
         )) {
-    // Inicialitzar el controlador directament
     ctrl = LdAppBarCtrl(
-      pVCtrl: vCtrl, 
-      pState: state,
+      pViewCtrl: viewCtrl, 
+      pState: state as LdAppBarState,
       pActions: pActions,
       showDrawerIcon: showDrawerIcon,
       showBackButton: showBackButton,
     );
-    
-    // Explícitament assignar el controlador a l'estat
-    state.wCtrl = ctrl;
-    
-    Debug.debug(DebugLevel.debug_0, "[LdAppBarWidget.constructor]: AppBar creat amb títol: $pTitle");
   }
-}
+} // LdAppBarWidget
 
-class LdAppBarState extends LdWidgetState {
-  // MEMBRES --------------------------
+class LdAppBarState
+ extends LdWidgetState {
+
+  // 🧩 MEMBRES --------------------------
   String _title;
   String? _subtitle;
 
-  // CONSTRUCTORS ---------------------
+  // 🛠️ CONSTRUCTORS ---------------------
   LdAppBarState({
     required String pTitle, 
     String? pSubtitle, 
-    required super.pTag, 
-    required super.pVCtrl, 
-    required super.pLabel, 
+    required super.pViewState,
+    required super.pViewCtrl, 
   }): 
     _title = pTitle,
-    _subtitle = pSubtitle;
+    _subtitle = pSubtitle,
+    super(pLabel: "LdAppBarWidget");
     
   @override
   void loadData() {
@@ -87,70 +81,134 @@ class LdAppBarState extends LdWidgetState {
     _subtitle = value;
     ctrl.notify(pTgts: [ctrl.tag]);
   }
-}
+} // class LdAppBarState
 
-class LdAppBarCtrl extends LdWidgetCtrl {
-  // MEMBRES --------------------------
+class LdAppBarCtrl
+ extends LdWidgetCtrl {
+  // 🧩 MEMBRES --------------------------
+  GetBuilder<LdViewCtrl>? getBuilder;
   final List<Widget>? pActions;
   final bool showDrawerIcon;
   final bool showBackButton;
   
-  // CONSTRUCTORS ---------------------
+  // 🛠️ CONSTRUCTORS ---------------------
   LdAppBarCtrl({ 
-    required super.pVCtrl, 
-    required super.pState, 
-    super.pTag,
+    required super.pViewCtrl, 
+    required LdAppBarState pState, 
     this.pActions,
     this.showDrawerIcon = false,
     this.showBackButton = false,
-  });
+  }): super(pTag: WidgetKey.appBar.idx, pState: pState);
 
   // 'LdWidgetCtrl' -------------------
   @override
   Widget buildWidget(BuildContext pCtx) {
-    Debug.debug(DebugLevel.debug_0, "[LdAppBarCtrl.buildWidget]: Construint AppBar");
-    
-    // Obtenir l'estat
-    final appBarState = state as LdAppBarState;
-    
-    // Configuració del leading icon
-    Widget? leadingIcon;
-    if (showBackButton) {
-      leadingIcon = IconButton(
+    return state.isLoading
+      ? buildLoadingWidget(pCtx)
+      : buildLoadedWidget(pCtx);
+  }
+
+  Widget? buildLeadingIcon(BuildContext pCtx) {
+    return (showBackButton)
+      ? IconButton(
         icon: Icon(Icons.arrow_back),
-        onPressed: () => Navigator.of(pCtx).pop(),
-      );
-    } else if (showDrawerIcon) {
-      leadingIcon = IconButton(
-        icon: Icon(Icons.menu),
-        onPressed: () {
-          Scaffold.of(pCtx).openDrawer();
-        },
-      );
-    }
+        onPressed: () => Navigator.of(pCtx).pop())
+      : (showDrawerIcon)
+        ? IconButton(
+          icon: Icon(Icons.menu),
+          onPressed: () {
+            Scaffold.of(pCtx).openDrawer();
+          })
+        : null;
+  }
+   
+  Widget buildLoadingWidget(BuildContext pBCtx) {
+    final barState = state as LdAppBarState;
+
+    // Cos de la barra.
+    getBuilder ??= GetBuilder<LdViewCtrl>( // GetBuilder<LdViewCtrl>(
+      id: WidgetKey.appBarProgress.idx,
+      tag: WidgetKey.appBarProgress.idx,
+      init: viewCtrl,
+      builder: (pCtx) {
+        var (int iLen, int iDids, double? dRatio) = viewCtrl.state.stats;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text("${Tr.loading.tr}...", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            Text((dRatio != null) 
+                ? "$iDids ${Tr.of.tr} $iLen (${(dRatio * 100).toStringAsPrecision(3)}%)"
+                : "$iDids ${Tr.of.tr} $iLen",
+              style: TextStyle(
+                fontSize: 14, 
+                fontWeight: FontWeight.normal,
+                color: barState.viewState.isError ? Colors.red : null
+              ),
+            ),
+            LinearProgressIndicator(
+              minHeight: 5.0.h,
+              value: dRatio,
+              // color: Colors.blue,
+              backgroundColor: Theme.of(pBCtx).colorScheme.primary,
+              valueColor: AlwaysStoppedAnimation<Color>(Theme.of(pBCtx).colorScheme.onPrimary),
+            ),
+          ],
+        );
+      }
+    ); 
     
+    return AppBar(
+      title: getBuilder!,
+      elevation: 4.0,
+      centerTitle: false,
+      backgroundColor: Theme.of(pBCtx).colorScheme.primary,
+      foregroundColor: Theme.of(pBCtx).colorScheme.onPrimary,
+    );
+  }
+
+  Widget buildLoadedWidget(BuildContext pCtx) {
+    final barState = state as LdAppBarState;
+
+    // Configuració del leading icon
+    Widget? leadingIcon = buildLeadingIcon(pCtx);
+
+    // Cos de la barra.
+    Widget body;
+
     // Construir el títol amb subtítol si existeix
-    Widget titleWidget;
-    if (appBarState.subtitle != null) {
-      titleWidget = Column(
+    if (barState.subtitle == null) {
+      // Només apareix el títol.
+      body = Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(appBarState.title, style: TextStyle(fontSize: 16)),
-          Text(
-            appBarState.subtitle!,
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
+          Text(barState.title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        ],
+      );
+
+    } else {
+      // Apareixen tant el títol com el subtítol.
+      body = Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(barState.title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+          Text(barState.subtitle!,
+            style: TextStyle(
+              fontSize: 14, 
+              fontWeight: FontWeight.normal,
+              color: barState.viewState.isError ? Colors.red : null
+            ),
           ),
         ],
       );
-    } else {
-      titleWidget = Text(appBarState.title);
     }
-    
-    // Retornar l'AppBar
+
     return AppBar(
-      title: titleWidget,
+      title: body,
       leading: leadingIcon,
+      titleSpacing: 0.0.h,
       actions: pActions,
       elevation: 4.0,
       centerTitle: false,
@@ -158,4 +216,5 @@ class LdAppBarCtrl extends LdWidgetCtrl {
       foregroundColor: Theme.of(pCtx).colorScheme.onPrimary,
     );
   }
-}
+
+} // class LdAppBarWidget

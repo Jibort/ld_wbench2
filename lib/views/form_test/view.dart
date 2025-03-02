@@ -11,7 +11,7 @@ export 'controller.dart';
 export 'state.dart';
 
 class FormTestView 
-extends LdView<FormTestViewCtrl> {
+extends LdView<FormTestViewState, FormTestViewCtrl> {
   // ESTÀTICS --------------------------
   static const className = 'FormTestView';
 

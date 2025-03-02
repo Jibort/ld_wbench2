@@ -2,11 +2,11 @@
 // createdAt: 2025/02/13 dj. JIQ
 
 class LiFo<T> {
-  // MEMBRES --------------------------
+  // 🧩 MEMBRES --------------------------
   final List<T> _list = <T>[];
   final int _maxLength;
 
-  // CONSTRUCTORS ---------------------
+  // 🛠️ CONSTRUCTORS ---------------------
   LiFo({int? pMaxLength}): _maxLength = (pMaxLength?? -1);
 
   // GETTERS i SETTERS ----------------

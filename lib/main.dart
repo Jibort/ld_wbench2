@@ -10,16 +10,18 @@ import 'package:get/get.dart';
 import 'package:ld_wbench2/ld_sabina_application.dart';
 import 'package:ld_wbench2/ld_sabina_controller.dart';
 import 'package:ld_wbench2/services/services.dart';
+import 'package:ld_wbench2/tools/debug.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Get.isLogEnable = kDebugMode;
-  
+  Debug.activateAllLevels();
+    
   // ✅ Inicialitzem serveis de forma asíncrona
   await Get.put(LdSecureStorageService().init(),  tag: LdSecureStorageService.className);
   await Get.put(LdDatabaseService().init(),       tag: LdDatabaseService.className);
   await Get.put(LdNetworkService().init(),        tag: LdNetworkService.className);
   await Get.put(LdAuthService().init(),           tag: LdAuthService.className);
 
-  runApp(LdSabinaApplication(pSCtrl: LdSabinaController()));
+  runApp(LdSabinaApplication(pSCtrl: LdSabinaController.inst));
 }

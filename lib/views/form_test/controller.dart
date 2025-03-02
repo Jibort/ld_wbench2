@@ -3,6 +3,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:ld_wbench2/core/ld_ctrl.dart';
 import 'package:ld_wbench2/core/ld_view_ctrl.dart';
 import 'package:ld_wbench2/tools/debug.dart';
 import 'package:ld_wbench2/views/form_test/state.dart';
@@ -18,6 +19,7 @@ import 'package:ld_wbench2/widgets/ld_time_picker_widget.dart';
 class FormTestViewCtrl 
 extends LdViewCtrl {
   // MEMBRES ADDICIONALS -------------
+  GetBuilder<LdViewCtrl>? getBuilder;
   final formKey = GlobalKey<FormState>();
   
   // WIDGETS =========================
@@ -30,7 +32,9 @@ extends LdViewCtrl {
   // GETTERS DE WIDGETS ===============
   LdEditWidget get nameField {
     _nameField ??= LdEditWidget(
-      pVCtrl: this,
+      pViewCtrl: this,
+      pViewState: state,
+      pTag: "edtName",
       label: 'Nom complet',
       hintText: 'Introduïu el vostre nom',
       validator: (value) {
@@ -47,7 +51,9 @@ extends LdViewCtrl {
   
   LdEditWidget get emailField {
     _emailField ??= LdEditWidget(
-      pVCtrl: this,
+      pViewCtrl: this,
+      pViewState: state,
+      pTag: "edtEmail",
       label: 'Correu electrònic',
       hintText: 'exemple@correu.com',
       keyboardType: TextInputType.emailAddress,
@@ -66,7 +72,9 @@ extends LdViewCtrl {
   
   LdCheckWidget get termsCheck {
     _termsCheck ??= LdCheckWidget(
-      pVCtrl: this,
+      pTag: "chkTerms",
+      pViewCtrl: this,
+      pViewState: state,
       label: 'Accepto els termes i condicions',
       validator: (value) {
         if (value != true) {
@@ -80,7 +88,9 @@ extends LdViewCtrl {
   
   LdDatePickerWidget get birthDatePicker {
     _birthDatePicker ??= LdDatePickerWidget(
-      pVCtrl: this,
+      pTag: "pckBirth",
+      pViewCtrl: this,
+      pViewState: state,
       label: 'Data de naixement',
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
@@ -96,7 +106,9 @@ extends LdViewCtrl {
   
   LdTimePickerWidget get appointmentPicker {
     _appointmentPicker ??= LdTimePickerWidget(
-      pVCtrl: this,
+      pTag: "pckTime",
+      pViewCtrl: this,
+      pViewState: state,
       label: 'Hora de cita',
       minTime: TimeOfDay(hour: 9, minute: 0),
       maxTime: TimeOfDay(hour: 18, minute: 0),
@@ -111,7 +123,7 @@ extends LdViewCtrl {
   }
   
   // 🛠️ CONSTRUCTORS -------------------
-  FormTestViewCtrl({ required String pTag, required super.pState }): super(pTag: pTag) {
+  FormTestViewCtrl({ required super.pTag, required super.pState }) {
     addWidgets([
       WidgetKey.scaffold.idx,
       WidgetKey.appBar.idx,
@@ -225,7 +237,9 @@ extends LdViewCtrl {
       pTitle: testState.title,
       pSubtitle: testState.subtitle,
       btnFloatAction: LdFloatingActionButton(
-        pVCtrl: this,
+        pTag: "btnValidate",
+        pViewCtrl: this,
+        pViewState: state,
         onPressed: validateForm,
         icon: Icon(Icons.check),
         tooltip: 'Validar formulari',
@@ -233,18 +247,20 @@ extends LdViewCtrl {
         foregroundColor: Get.theme.colorScheme.onPrimary,
       ),
       wgtBody: LdContainer(
-        pVCtrl: this,
+        pTag: "${tag}_",
+        pViewCtrl: this,
+        pViewState: state,
         child: bodyWidget,
       ),
     );
   }
 
   Widget _buildBody(BuildContext pCtx) {
-    return GetBuilder<FormTestViewCtrl>(
+    getBuilder ??= GetBuilder<LdViewCtrl>( // GetBuilder<FormTestViewCtrl>(
       id: WidgetKey.pageBody.idx,
       tag: WidgetKey.pageBody.idx,
       init: this,
-      builder: (FormTestViewCtrl vCtrl) {
+      builder: (LdCtrl vCtrl) {
         if (state.isNew || state.isLoading || state.isLoadingAgain) {
           return Center(child: CircularProgressIndicator());
         } else {
@@ -252,6 +268,7 @@ extends LdViewCtrl {
         }
       },
     );
+    return getBuilder!;
   }
 
   Widget _buildFormContent(BuildContext pCtx) {

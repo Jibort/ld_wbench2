@@ -8,7 +8,7 @@ extends LdWidget {
   LdButton({
     super.key, 
     required super.pState, 
-    required super.pVCtrl,
+    required super.pViewCtrl,
   });
 
 

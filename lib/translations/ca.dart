@@ -1,4 +1,8 @@
+import 'tr.dart';
+
 const Map<String, String> caMap = {
-  "sabinaApp": "Aplicació Sabina",
-  "sabinaWelcome": "Benvingut/da a Sabina."
+  Tr.sabinaApp: "Aplicació Sabina",
+  Tr.sabinaWelcome: "Benvingut/da a Sabina.",
+  Tr.loading: "Carregant",
+  Tr.of: "de",
 };

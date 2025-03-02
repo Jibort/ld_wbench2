@@ -24,19 +24,19 @@ class MockupViewState extends LdViewState {
           pSubtitle: Tr.sabinaWelcome.tr
         );
 
-  // CONSTRUCTORS ---------------------
+  // 🛠️ CONSTRUCTORS ---------------------
   MockupViewState({ required super.pTitle, super.pSubtitle });
 
   // MÉTODES ADDICIONALS -------------
   void addItem(String item) {
     items.add(item);
-    vCtrl.notify(pTgts: [WidgetKey.listTile.idx]);
+    viewCtrl.notify(pTgts: [WidgetKey.listTile.idx]);
   }
 
   void removeItem(int index) {
     if (index >= 0 && index < items.length) {
       items.removeAt(index);
-      vCtrl.notify(pTgts: [WidgetKey.listTile.idx]);
+      viewCtrl.notify(pTgts: [WidgetKey.listTile.idx]);
     }
   }
 
@@ -119,7 +119,7 @@ class MockupViewState extends LdViewState {
 //           pSubtitle: Tr.sabinaWelcome.tr
 //         );
 
-//   // CONSTRUCTORS ---------------------
+//   // 🛠️ CONSTRUCTORS ---------------------
 //   MockupViewState({ required super.pTitle, super.pSubtitle });
 
 //   // 'LdViewState' --------------------

@@ -6,34 +6,37 @@ import 'package:get/get.dart';
 import 'package:ld_wbench2/core/ld_view_ctrl.dart';
 import 'package:ld_wbench2/core/ld_view_state.dart';
 
-abstract class LdView<C extends LdViewCtrl>
+abstract class LdView<S extends LdViewState, C extends LdViewCtrl>
 extends GetView<C> {
   // 📝 ESTÀTICS -----------------------
   static const className = "LdView";
 
   // 🧩 MEMBRES ------------------------
-  final LdViewState _state;
-  final LdViewCtrl  _ctrl;
+  GetBuilder<C>? getBuilder;
+  final S  _state;
+  final C  _ctrl;
 
   // 🛠️ CONSTRUCTORS -------------------
   LdView({ 
     super.key, 
-    required LdViewCtrl pCtrl
-  }): _ctrl = pCtrl, _state = pCtrl.state as LdViewState;
+    required C pCtrl
+  }): _ctrl = pCtrl, _state = pCtrl.state as S;
 
   // 📥 GETTERS/SETTERS ----------------
-  LdViewState get state => _state;
-  LdViewCtrl  get ctrl  => _ctrl;
+  S get state => _state;
+  C  get ctrl  => _ctrl;
 
   // 🛠️ CONSTRUCCIÓ DE LA VISTA -------
   @override
   @mustCallSuper
   Widget build(BuildContext pCtx) {
-    return GetBuilder<LdViewCtrl>(
+    getBuilder ??= GetBuilder<C>(
       id: ctrl.tag,     // Identificador per a l'actualització del GetBuilder.
       tag: ctrl.tag,    // Identificador per a la cerca dins el registre de GetX.
       init: ctrl,       // Controlador on escolta el GetBuilder. 
       builder: (vCtrl) => vCtrl.buildView(pCtx),  // Construcció de la vista.
     );
+
+    return getBuilder!;
   }
 }
