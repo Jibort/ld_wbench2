@@ -29,7 +29,7 @@ extends LdState<LdViewState, LdViewCtrl> {
     _subtitle = pSubtitle,
     _message = pMessage;
 
-  // GETTERS/SETTERS ------------------
+  // 📥 GETTERS/SETTERS ------------------
   String  get title    => _title;
   String? get subtitle => _subtitle;
   void setTitles({required String pTitle, String? pSubtitle}) { 

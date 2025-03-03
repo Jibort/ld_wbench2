@@ -30,6 +30,9 @@ extends LdWidget {
         pViewCtrl: pViewCtrl,
         pViewState: pViewState,
       )) {
+    tag = pTag;
+    typeName = className;
+    
     ctrl = LdFloatingActionButtonCtrl(
       pViewCtrl: viewCtrl,
       pState: state,

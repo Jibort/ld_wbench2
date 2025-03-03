@@ -40,6 +40,9 @@ extends LdWidget<LdEditWidgetState, LdEditWidgetCtrl> {
             pInitialValue: initialValue ?? "",
           ),
         ) {
+    tag = pTag;
+    typeName = className;
+    
     ctrl = LdEditWidgetCtrl(
       pViewCtrl: viewCtrl,
       pState: state,
@@ -79,7 +82,7 @@ class LdEditWidgetState extends LdWidgetState {
     required String pInitialValue,
   }) : _text = pInitialValue;
 
-  // GETTERS/SETTERS ------------------
+  // 📥 GETTERS/SETTERS ------------------
   String get text => _text;
   set text(String value) {
     _text = value;

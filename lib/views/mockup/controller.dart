@@ -31,7 +31,7 @@ class MockupViewCtrl extends LdViewCtrl {
     ]);
   }
 
-  // GETTERS/SETTERS ------------------
+  // 📥 GETTERS/SETTERS ------------------
   MockupViewState get mockupState => state as MockupViewState;
 
   // MÉTODES ADDICIONALS --------------

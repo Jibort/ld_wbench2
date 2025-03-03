@@ -19,12 +19,12 @@ class LoadSteps {
 class LoadStep {
   // 🧩 MEMBRES -------------------------
   final String _index;
-  final String _title;
+  final String? _title;
   final String? _description;
   final List<String>? _upds;
 
   // 🛠️ CONSTRUCTORS --------------------
-  LoadStep({ required String pIdx, required String pTitle, String? pDesc, List<String>? pUpds })
+  LoadStep({ required String pIdx, String? pTitle, String? pDesc, List<String>? pUpds })
       : _index = pIdx,
         _title = pTitle,
         _description = pDesc,
@@ -32,7 +32,7 @@ class LoadStep {
 
   // GETTERS i SETTERS ---------------
   String  get index       => _index;
-  String  get title       => _title;
+  String? get title       => _title;
   String? get description => _description;
   List<String>? get upds  => _upds;
 }

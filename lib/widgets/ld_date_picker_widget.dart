@@ -36,6 +36,9 @@ class LdDatePickerWidget extends LdWidget {
             pInitialValue: initialValue,
           ),
         ) {
+    tag = pTag;
+    typeName = className;
+    
     ctrl = LdDatePickerWidgetCtrl(
       pViewCtrl: viewCtrl,
       pState: state,
@@ -73,7 +76,7 @@ class LdDatePickerWidgetState extends LdWidgetState {
     DateTime? pInitialValue,
   }) : _selectedDate = pInitialValue;
 
-  // GETTERS/SETTERS ------------------
+  // 📥 GETTERS/SETTERS ------------------
   DateTime? get selectedDate => _selectedDate;
   set selectedDate(DateTime? value) {
     _selectedDate = value;

@@ -1,6 +1,9 @@
 // Controlador principal de l'aplicació Sabina.
 // CreatedAt: 2025/02/13 dj. JIQ
 
+// Controlador principal de l'aplicació Sabina.
+// CreatedAt: 2025/02/13 dj. JIQ
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ld_wbench2/core/ld_id_mixin.dart';

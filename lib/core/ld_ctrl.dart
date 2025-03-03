@@ -4,6 +4,7 @@
 import 'package:get/get.dart';
 import 'package:ld_wbench2/core/ld_id_mixin.dart';
 import 'package:ld_wbench2/core/ld_state.dart';
+import 'package:ld_wbench2/tools/debug.dart';
 
 abstract class LdCtrl<
   C extends LdCtrl<C, S>,
@@ -33,6 +34,7 @@ with     LdIdMixin {
   @override
   void onClose() {
     // implementació arrel.
+    Debug.debug(DebugLevel.debug_9, "Eliminant controlador '$tag' de GetX.");
     Get.delete(tag: tag, force: true);
   }
 

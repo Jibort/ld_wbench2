@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ld_wbench2/core/ld_view_ctrl.dart';
 import 'package:ld_wbench2/ld_sabina_controller.dart';
+import 'package:ld_wbench2/ld_theme_controller.dart';
 import 'package:ld_wbench2/views/basic_test/state.dart';
 import 'package:ld_wbench2/views/widget_key.dart';
 import 'package:ld_wbench2/widgets/ld_action_button_widget.dart';
@@ -26,7 +27,7 @@ extends LdViewCtrl {
     ]);
   }
 
-  // GETTERS/SETTERS ------------------
+  // 📥 GETTERS/SETTERS ------------------
   BasicTestViewState get testState => state as BasicTestViewState;
 
   // 'LdViewCtrl' ---------------------
@@ -48,8 +49,20 @@ extends LdViewCtrl {
           pTag: "btnToogleTheme",
           pViewCtrl: this,
           icon: Icons.mode_night_outlined,
-          onPressed: () => LdSabinaController.inst.toggleTheme(), 
+          onPressed: () {
+            // LdSabinaController.inst.toggleTheme();
+            // notify();
+            LdThemeController.instance.toggleTheme();
+          },
           label: "btnToogleTheme", 
+          pViewState: state, 
+        ), 
+        LdActionButtonWidget(
+          pTag: "btnAux_01",
+          pViewCtrl: this,
+          icon: Icons.more_vert,
+          onPressed: () {}, 
+          label: "btnAux_01", 
           pViewState: state, 
         ),
       ],

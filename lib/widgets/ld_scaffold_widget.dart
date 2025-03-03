@@ -11,14 +11,14 @@ import 'package:ld_wbench2/views/widget_key.dart';
 import 'package:ld_wbench2/widgets/ld_app_bar_widget.dart';
 
 // WIDGET 'LdScaffoldWidget' ==========
-class LdScaffoldWidget extends LdWidget {
+class LdScaffoldWidget
+extends LdWidget {
   // ESTÀTICS -------------------------
   static const className = "LdScaffold";
 
   // 🛠️ CONSTRUCTORS ---------------------
   LdScaffoldWidget({
     super.key,
-    String? pTag,
     required LdViewState pViewState,
     required String pTitle,
     String? pSubtitle,
@@ -54,7 +54,7 @@ class LdScaffoldWidget extends LdWidget {
       pViewState: pViewState,
       pLabel: className
     )) {
-    tag = pTag ?? WidgetKey.scaffold.idx;
+    tag = WidgetKey.scaffold.idx;
     typeName = className;
     
     // Crear explícitament el controlador amb tots els paràmetres
@@ -99,7 +99,7 @@ class LdScaffoldState extends LdWidgetState {
   String _title;
   String? _subtitle;
 
-  // GETTERS/SETTERS ------------------
+  // 📥 GETTERS/SETTERS ------------------
   String get title => _title;
   String? get subtitle => _subtitle;
   void setTitles({required String pTitle, String? pSubtitle}) {
@@ -206,7 +206,7 @@ class LdScaffoldCtrl extends LdWidgetCtrl {
       );
     }
   
-  // GETTERS/SETTERS ------------------
+  // 📥 GETTERS/SETTERS ------------------
   @override
   LdScaffoldState get state => super.state as LdScaffoldState;
 

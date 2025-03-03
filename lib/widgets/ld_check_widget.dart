@@ -66,7 +66,7 @@ class LdCheckWidgetState extends LdWidgetState {
     required bool pInitialValue,
   }) : _value = pInitialValue;
 
-  // GETTERS/SETTERS ------------------
+  // 📥 GETTERS/SETTERS ------------------
   bool get value => _value;
   set value(bool val) {
     _value = val;

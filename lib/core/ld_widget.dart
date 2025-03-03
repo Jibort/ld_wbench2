@@ -8,8 +8,11 @@ import 'package:ld_wbench2/core/ld_view_ctrl.dart';
 import 'package:ld_wbench2/core/ld_view_state.dart';
 import 'package:ld_wbench2/core/ld_widget_ctrl.dart';
 import 'package:ld_wbench2/core/ld_widget_state.dart';
+import 'package:ld_wbench2/ld_theme_controller.dart';
 
-abstract class LdWidget<S extends LdWidgetState, C extends LdWidgetCtrl>
+abstract class LdWidget<
+  S extends LdWidgetState, 
+  C extends LdWidgetCtrl>
 extends GetWidget<C> 
 with    LdIdMixin {
 
@@ -28,7 +31,7 @@ with    LdIdMixin {
     _viewCtrl = pViewCtrl,
     _state    = pState;
 
-  // GETTERS/SETTERS ------------------
+  // 📥 GETTERS/SETTERS ------------------
   LdViewCtrl    get viewCtrl  => _viewCtrl;
   LdViewState   get viewState => _viewCtrl.state;
 
@@ -39,12 +42,18 @@ with    LdIdMixin {
   // CONSTRUCCIÓ DE LA VISTA ----------
   @override
   Widget build(BuildContext pCtx) {
-    _getBuilder ??= GetBuilder<LdViewCtrl>( // GetBuilder<LdViewCtrl>(
+    _getBuilder ??= GetBuilder<LdViewCtrl>(
       id: ctrl.tag,
       tag: ctrl.tag,
       init: viewCtrl,
-      builder: (pWCtrl) => _ctrl.buildWidget(pCtx),
+      builder: (viewController) => GetBuilder<LdThemeController>(
+        id: ctrl.tag,
+        tag: ctrl.tag,
+        init: LdThemeController.instance,
+        builder: (themeController) => _ctrl.buildWidget(pCtx),
+      ),
     );
+  
     return _getBuilder!; 
   }
 }

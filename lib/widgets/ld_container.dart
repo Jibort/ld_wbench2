@@ -34,7 +34,10 @@ extends LdWidget {
       pLabel: label ?? 'Container',
       pViewCtrl: pViewCtrl,
       pViewState: pViewState,  
-    )) {
+  )) {
+    tag = pTag;
+    typeName = className;
+    
     ctrl = LdContainerCtrl(
       pViewCtrl: viewCtrl,
       pState: state,

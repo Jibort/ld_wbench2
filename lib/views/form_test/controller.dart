@@ -133,7 +133,7 @@ extends LdViewCtrl {
     ]);
   }
 
-  // GETTERS/SETTERS ------------------
+  // 📥 GETTERS/SETTERS ------------------
   FormTestViewState get testState => state as FormTestViewState;
 
 // MÈTODES ADDICIONALS --------------

@@ -11,7 +11,7 @@ extends LdViewState {
   static String className = "BasicTestViewState";
 
   // MEMBRES ADDICIONALS -------------
-  final List<String> _packages = [
+  final List<String?> _packages = [
     'Nucli',
     'Model',
     'Controladors',
@@ -24,9 +24,9 @@ extends LdViewState {
     'Configuració'
     'Nucli 2',
     'Model 2',
-    'Controladors 2',
+    null,
     'Vistes 2',
-    'Serveis 2',
+    null,
     'Eines 2',
     'Widgets 2',
     'Proves 2',
@@ -58,7 +58,7 @@ extends LdViewState {
       stepFunction(FiFo pQueue, List<dynamic> pArgs) async {
         try {
           // Cada pas dura aproximadament 1.33 segons (20s ÷ 15 passos)
-          await Future.delayed(Duration(milliseconds: 1330));
+          await Future.delayed(Duration(milliseconds: 750));
         } on Exception catch (pExc) {
           Debug.error("⚠️ Error en package_$packId:", pExc);
           exc = pExc;
@@ -68,7 +68,7 @@ extends LdViewState {
       
       sneakFn(stepFunction, pLoadStep: LoadStep(
         pIdx: 'package_${packId + 1}', 
-        pTitle: 'Carregant ${_packages[packId]}', 
+        pTitle: _packages[packId], 
         pDesc: 'Inicialitzant paquet ${packId + 1} de ${_packages.length}',
         pUpds: upds
       ));

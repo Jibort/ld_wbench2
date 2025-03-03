@@ -1,16 +1,17 @@
 // Aplicació Sabina.
 // CreatedAt: 2025/02/27 dj. JIQ
 
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:ld_wbench2/ld_sabina_controller.dart';
 import 'package:ld_wbench2/translations/tr.dart';
 import 'package:ld_wbench2/tools/consts/devices.dart';
 import 'package:ld_wbench2/views/app_routes.dart';
 
-class LdSabinaApplication extends StatelessWidget {
+class   LdSabinaApplication
+extends StatelessWidget {
   // ESTÀTICS -------------------------
   static const className = "LdSabinaApp";
 

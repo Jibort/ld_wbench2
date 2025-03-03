@@ -3,6 +3,7 @@
 
 // Estats de la càrrega de dades per a la pàgina.
 import 'package:flutter/foundation.dart';
+import 'package:get/get.dart';
 import 'package:ld_wbench2/core/ld_ctrl.dart';
 import 'package:ld_wbench2/core/ld_view_ctrl.dart';
 import 'package:ld_wbench2/tools/debug.dart';
@@ -32,13 +33,13 @@ abstract class LdState<
 
   // 📝 ESTÀTICS -----------------------
   static const className = "LdState";
+  static const loadingElm = "LoadingElelement";
 
   // 🧩 MEMBRES ------------------------
-  String? _errorCode;
-  String? _errorMessage;
+  String?    _errorCode;
+  String?    _errorMessage;
   Exception? _exception;
   late C _ctrl;
-  // bool _isCSet = false;
   Function(FiFo pQueue)? _onAltered;
   final _queue = FiFo();
   int _length = 0;
@@ -159,8 +160,11 @@ abstract class LdState<
       switch (obj) {
         case LoadStep loadStep:
           (isNotNull(loadStep.description)) 
-            ? Debug.debug(DebugLevel.debug_2, 'Step[${loadStep.index}]: ${loadStep.title} ${loadStep.description}') 
-            : Debug.debug(DebugLevel.debug_2, "Step[${loadStep.index}]: ${loadStep.title}");
+            ? Debug.debug(DebugLevel.debug_2, 'Step[${loadStep.index}]: ${loadStep.title??"?"} ${loadStep.description}') 
+            : Debug.debug(DebugLevel.debug_2, "Step[${loadStep.index}]: ${loadStep.title??"?"}");
+            if (loadStep.title != null) {
+              Get.parameters[loadingElm] = loadStep.title;
+            }
           if (isNotNull(loadStep.upds)) {
             ctrl.notify(pTgts: loadStep.upds!);
           }

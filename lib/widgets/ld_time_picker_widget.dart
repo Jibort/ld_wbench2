@@ -8,7 +8,8 @@ import 'package:ld_wbench2/core/ld_widget_ctrl.dart';
 import 'package:ld_wbench2/core/ld_widget_state.dart';
 import 'package:ld_wbench2/tools/null_mang.dart';
 
-class LdTimePickerWidget extends LdWidget {
+class   LdTimePickerWidget
+extends LdWidget {
   // ESTÀTICS -------------------------
   static String className = "LdTimePickerWidget";
 
@@ -34,6 +35,9 @@ class LdTimePickerWidget extends LdWidget {
             pInitialValue: initialValue,
           ),
         ) {
+    tag = pTag;
+    typeName = className;
+    
     ctrl = LdTimePickerWidgetCtrl(
       pViewCtrl: viewCtrl,
       pState: state,
@@ -70,7 +74,7 @@ class LdTimePickerWidgetState extends LdWidgetState {
     TimeOfDay? pInitialValue,
   }) : _selectedTime = pInitialValue;
 
-  // GETTERS/SETTERS ------------------
+  // 📥 GETTERS/SETTERS ------------------
   TimeOfDay? get selectedTime => _selectedTime;
   set selectedTime(TimeOfDay? value) {
     _selectedTime = value;

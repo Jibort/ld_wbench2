@@ -30,6 +30,10 @@ extends LdWidget<LdActionButtonWidgetState, LdActionButtonWidgetCtrl> {
             pViewState: pViewState,
           ),
         ) {
+    // Es important inicialitzar el tag abans de crear el controlador
+    this.tag = pTag;
+    this.typeName = className;
+    
     ctrl = LdActionButtonWidgetCtrl(
       pViewCtrl: viewCtrl,
       pState: state,
@@ -52,8 +56,7 @@ extends LdWidget<LdActionButtonWidgetState, LdActionButtonWidgetCtrl> {
   void trigger() => ctrl.trigger();
 }
 
-class LdActionButtonWidgetState
-extends LdWidgetState {
+class LdActionButtonWidgetState extends LdWidgetState {
   // 🧩 MEMBRES --------------------------
   bool _isEnabled = true;
 
@@ -64,7 +67,7 @@ extends LdWidgetState {
     required super.pLabel,
   });
 
-  // GETTERS/SETTERS ------------------
+  // 📥 GETTERS/SETTERS ------------------
   bool get isEnabled => _isEnabled;
   set isEnabled(bool value) {
     _isEnabled = value;
@@ -77,8 +80,7 @@ extends LdWidgetState {
   }
 }
 
-class LdActionButtonWidgetCtrl
-extends LdWidgetCtrl {
+class LdActionButtonWidgetCtrl extends LdWidgetCtrl {
   // 🧩 MEMBRES --------------------------
   final String label;
   final VoidCallback onPressed;
@@ -121,34 +123,105 @@ extends LdWidgetCtrl {
   Widget buildWidget(BuildContext pCtx) {
     final bool isEnabled = (state as LdActionButtonWidgetState).isEnabled;
     
-    // Si tenim una icona, utilitzem un IconButton
+    // Accés segur al tema
+    ThemeData? theme;
+    Color defaultIconColor;
+    
+    try {
+      // Utilitzem una solució més compatible per accedir al tema de forma segura
+      bool isContextValid = false;
+      
+      try {
+        // Comprovem si el context és vàlid
+        final _ = pCtx.findRenderObject();
+        isContextValid = true;
+      } catch (e) {
+        isContextValid = false;
+      }
+      
+      if (isContextValid) {
+        // Si el context és vàlid, utilitzem Theme.of de forma segura
+        try {
+          theme = Theme.of(pCtx);
+          defaultIconColor = iconColor ?? theme.colorScheme.onPrimary;
+        } catch (e) {
+          // Si falla l'accés al tema, utilitzem un valor per defecte
+          defaultIconColor = iconColor ?? Colors.white;
+        }
+      } else {
+        // Si el context no és vàlid, utilitzem un valor per defecte
+        defaultIconColor = iconColor ?? Colors.white;
+      }
+    } catch (e) {
+      // Si hi ha qualsevol altre error, utilitzem valors per defecte
+      defaultIconColor = iconColor ?? Colors.white;
+    }
+    
+    // Colors per defecte que coincideixen amb l'AppBar
+    final Color defaultBgColor = backgroundColor ?? Colors.transparent;
+    
+    // Si tenim una icona, utilitzem un IconButton estilitzat
     if (icon != null) {
-      // Com que IconButton no té backgroundColor directe, 
-      // utilitzem un Container amb IconButton o un Material per aplicar-lo
       return Material(
-        color: isEnabled ? backgroundColor : Colors.grey.withAlpha(77),
-        borderRadius: BorderRadius.circular(backgroundColor != null ? 25.0 : 0),
-        child: IconButton(
-          onPressed: isEnabled ? onPressed : null,
-          icon: Icon(
-            icon,
-            color: isEnabled ? iconColor : Colors.grey,
-            size: iconSize,
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(4.0),
+        clipBehavior: Clip.antiAlias, // Això farà que l'efecte splash respecti la forma
+        child: Container(
+          decoration: BoxDecoration(
+            color: isEnabled ? defaultBgColor : Colors.transparent,
+            borderRadius: BorderRadius.circular(4.0),
+            border: Border.all(
+              color: isEnabled 
+                ? defaultIconColor.withAlpha(80) // Més visible
+                : Colors.grey.withAlpha(60),
+              width: 1.5, // Una mica més gruixuda
+            ),
           ),
-          tooltip: label,
-          padding: padding ?? const EdgeInsets.all(8.0),
+          child: InkWell(
+            onTap: isEnabled ? onPressed : null,
+            splashColor: defaultIconColor.withAlpha(30),
+            highlightColor: defaultIconColor.withAlpha(20),
+            child: Padding(
+              padding: padding ?? const EdgeInsets.all(4.0), // Menys marge
+              child: Icon(
+                icon,
+                color: isEnabled ? defaultIconColor : Colors.grey,
+                size: iconSize ?? 24.0,
+              ),
+            ),
+          ),
         ),
       );
     } 
-    // Si no, farem servir un ElevatedButton normal
+    // Si no, farem servir un TextButton estilitzat per a AppBar
     else {
-      return ElevatedButton(
-        onPressed: isEnabled ? onPressed : null,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: isEnabled ? backgroundColor : Colors.grey.withAlpha(77),
-          padding: padding,
+      return Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(4.0),
+        clipBehavior: Clip.antiAlias, // Assegura que l'efecte splash respecta la forma
+        child: Container(
+          decoration: BoxDecoration(
+            color: isEnabled ? defaultBgColor : Colors.transparent,
+            borderRadius: BorderRadius.circular(4.0),
+            border: Border.all(
+              color: isEnabled 
+                ? defaultIconColor.withAlpha(80) // Més visible
+                : Colors.grey.withAlpha(60),
+              width: 1.5, // Una mica més gruixuda
+            ),
+          ),
+          child: InkWell(
+            onTap: isEnabled ? onPressed : null,
+            splashColor: defaultIconColor.withAlpha(30),
+            highlightColor: defaultIconColor.withAlpha(20),
+            child: Padding(
+              padding: padding ?? const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0), // Menys marge
+              child: Text(label, style: TextStyle(
+                color: isEnabled ? defaultIconColor : Colors.grey,
+              )),
+            ),
+          ),
         ),
-        child: Text(label),
       );
     }
   }
