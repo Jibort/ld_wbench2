@@ -5,4 +5,5 @@ const Map<String, String> frMap = {
   Tr.sabinaWelcome: "Bienvenue à Sabina.",
   Tr.loading: "Chargement",
   Tr.of: "de",
+  Tr.reload: "Recharger",
 };

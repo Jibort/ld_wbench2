@@ -1,7 +1,6 @@
 // Camp d'edició de text (obert o ofuscat).
 // CreatedAt: 2025/02/27 dj. JIQ
 
-// lib/widgets/ld_edit_widget.dart
 import 'package:flutter/material.dart';
 import 'package:ld_wbench2/core/ld_view_state.dart';
 import 'package:ld_wbench2/core/ld_widget.dart';
@@ -19,6 +18,8 @@ extends LdWidget<LdEditWidgetState, LdEditWidgetCtrl> {
   LdEditWidget({
     super.key,
     required String pTag,
+    required super.pViewCtrl,
+    required LdViewState pViewState,
     required String label,
     String? initialValue,
     String? hintText,
@@ -30,8 +31,6 @@ extends LdWidget<LdEditWidgetState, LdEditWidgetCtrl> {
     ValueChanged<String>? onSubmitted,
     FormFieldValidator<String>? validator,
     int? maxLength,
-    required super.pViewCtrl,
-    required LdViewState pViewState,
   }) : super(
           pState: LdEditWidgetState(
             pLabel: label,
@@ -44,9 +43,9 @@ extends LdWidget<LdEditWidgetState, LdEditWidgetCtrl> {
     typeName = className;
     
     ctrl = LdEditWidgetCtrl(
+      pTag: pTag,
       pViewCtrl: viewCtrl,
       pState: state,
-      pTag: pTag,
       label: label,
       hintText: hintText,
       obscureText: obscureText,
@@ -61,14 +60,15 @@ extends LdWidget<LdEditWidgetState, LdEditWidgetCtrl> {
   }
   
   // METHODS --------------------------
-  String get text        => state.text;
+  String get text            => state.text;
   set text(String value) => state.text = value;
   
   bool validate() => ctrl.validate();
   void reset()    => ctrl.reset();
 }
 
-class LdEditWidgetState extends LdWidgetState {
+class   LdEditWidgetState
+extends LdWidgetState {
   // 🧩 MEMBRES --------------------------
   String  _text;
   bool    _isValid = true;
@@ -108,7 +108,8 @@ class LdEditWidgetState extends LdWidgetState {
   }
 }
 
-class LdEditWidgetCtrl extends LdWidgetCtrl {
+class   LdEditWidgetCtrl
+extends LdWidgetCtrl {
   // 🧩 MEMBRES --------------------------
   final String label;
   final String? hintText;
@@ -208,7 +209,7 @@ class LdEditWidgetCtrl extends LdWidgetCtrl {
           (state as LdEditWidgetState).isValid = isValid;
         }
         
-        notify(pTgts: [tag]);
+        notify(pTgts: [ tag ]);
       }
     });
   }

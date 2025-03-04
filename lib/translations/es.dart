@@ -5,4 +5,5 @@ const Map<String, String> esMap = {
   Tr.sabinaWelcome: "Bienvenido/a a Sabina.",
   Tr.loading: "Cargando",
   Tr.of: "de",
+  Tr.reload: "Recargar",
 };

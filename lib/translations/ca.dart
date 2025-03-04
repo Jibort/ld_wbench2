@@ -5,4 +5,5 @@ const Map<String, String> caMap = {
   Tr.sabinaWelcome: "Benvingut/da a Sabina.",
   Tr.loading: "Carregant",
   Tr.of: "de",
+  Tr.reload: "Recarregar",
 };

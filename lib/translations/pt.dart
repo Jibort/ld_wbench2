@@ -5,4 +5,5 @@ const Map<String, String> ptMap = {
   Tr.sabinaWelcome: "Bem-vindo a Sabina.",
   Tr.loading: "Carregando",
   Tr.of: "de",
+  Tr.reload: "Recarregar",
 };

@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:ld_wbench2/core/ld_ctrl.dart';
 import 'package:ld_wbench2/core/ld_view_ctrl.dart';
 import 'package:ld_wbench2/core/ld_widget_state.dart';
-import 'package:ld_wbench2/ld_theme_controller.dart';
+import 'package:ld_wbench2/theme/ld_theme_controller.dart';
 
 abstract class LdWidgetCtrl
 extends LdCtrl<LdWidgetCtrl, LdWidgetState> {

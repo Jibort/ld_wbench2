@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ld_wbench2/core/ld_view_ctrl.dart';
 import 'package:ld_wbench2/ld_sabina_controller.dart';
-import 'package:ld_wbench2/ld_theme_controller.dart';
+import 'package:ld_wbench2/theme/ld_theme_controller.dart';
+import 'package:ld_wbench2/translations/tr.dart';
 import 'package:ld_wbench2/views/basic_test/state.dart';
 import 'package:ld_wbench2/views/widget_key.dart';
 import 'package:ld_wbench2/widgets/ld_action_button_widget.dart';
+import 'package:ld_wbench2/widgets/ld_button_widget.dart';
 import 'package:ld_wbench2/widgets/ld_container.dart';
 import 'package:ld_wbench2/widgets/ld_scaffold_widget.dart';
 
@@ -44,18 +46,14 @@ extends LdViewCtrl {
       pViewState: testState,
       pTitle: testState.title,
       pSubtitle: testState.subtitle,
-      pActions: [ 
+      pActions: [
         LdActionButtonWidget(
           pTag: "btnToogleTheme",
           pViewCtrl: this,
           icon: Icons.mode_night_outlined,
-          onPressed: () {
-            // LdSabinaController.inst.toggleTheme();
-            // notify();
-            LdThemeController.instance.toggleTheme();
-          },
-          label: "btnToogleTheme", 
-          pViewState: state, 
+          onPressed: () => LdThemeController.inst.toggleTheme(),
+          label: "btnToogleTheme",
+          pViewState: state,
         ), 
         LdActionButtonWidget(
           pTag: "btnAux_01",
@@ -147,12 +145,13 @@ extends LdViewCtrl {
             ),
             
             if (!isLoading)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: ElevatedButton(
-                  onPressed: () => testState.reset(),
-                  child: const Text('Recarregar'),
-                ),
+              LdButtonWidget(
+                pTag: "btnSave",
+                pViewCtrl: this,
+                pViewState: state,
+                enabled: true,
+                onPressed: () => testState.reset(),
+                label: Tr.reload.tr,
               ),
           ],
         ),

@@ -9,7 +9,8 @@ import 'package:ld_wbench2/core/ld_widget_ctrl.dart';
 import 'package:ld_wbench2/core/ld_widget_state.dart';
 import 'package:ld_wbench2/tools/null_mang.dart';
 
-class LdDatePickerWidget extends LdWidget {
+class LdDatePickerWidget
+extends LdWidget<LdDatePickerWidgetState, LdDatePickerWidgetCtrl> {
   // ESTÀTICS -------------------------
   static String className = "LdDatePickerWidget";
 

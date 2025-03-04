@@ -7,7 +7,8 @@ import 'package:ld_wbench2/core/ld_widget_ctrl.dart';
 import 'package:ld_wbench2/core/ld_widget_state.dart';
 
 class LdFloatingActionButton
-extends LdWidget {
+extends LdWidget<LdFloatingActionButtonState, LdFloatingActionButtonCtrl> {
+  
   // ESTÀTICS -------------------------
   static String className = "LdFloatingActionButton";
 

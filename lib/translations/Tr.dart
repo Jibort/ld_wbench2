@@ -16,7 +16,9 @@ class Tr extends Translations {
   static const sabinaApp = "sabinaApp";
   static const sabinaWelcome = "sabinaWelcome";
   static const loading = "loading";
+  static const reload = "reload";
   static const of = "of";
+
   
   static final Tr inst = Tr();
   static const Map<String, Map<String, String>> _keys = {

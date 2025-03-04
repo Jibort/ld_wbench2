@@ -2,22 +2,25 @@
 // CreatedAt: 2025/03/03 dl. JIQ
 
 import 'dart:ui';
-
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter/material.dart';
+import 'package:ld_wbench2/theme/ld_theme.dart';
 
 class   LdThemeController
 extends GetxController {
-  
   // ESTÀTICS -------------------------
   static String ctrlTag = "themeCtrl"; 
   
   // Instància única (singleton)
-  static LdThemeController get instance => Get.find<LdThemeController>(tag: ctrlTag);
+  static LdThemeController get inst => Get.find<LdThemeController>(tag: ctrlTag);
   
   // MEMBRES --------------------------
   ThemeMode _themeMode = ThemeMode.system;
   bool _isDarkMode = false;
+  
+  // Temes personalitzats
+  ThemeData get lightTheme => LdTheme.lightTheme;
+  ThemeData get darkTheme => LdTheme.darkTheme;
   
   // 📥 GETTERS/SETTERS ------------------
   ThemeMode get themeMode => _themeMode;
@@ -42,7 +45,7 @@ extends GetxController {
     }
     
     Get.changeThemeMode(mode);
-    update(); // Actualitzar els GetBuilders que escolten aquest controlador
+    update([ctrlTag]); // Actualitzar els GetBuilders que escolten aquest controlador
   }
   
   void toggleTheme() {
@@ -63,7 +66,7 @@ extends GetxController {
       
       if (_isDarkMode != newIsDarkMode) {
         _isDarkMode = newIsDarkMode;
-        update();
+        update([ctrlTag]);
       }
     }
   }

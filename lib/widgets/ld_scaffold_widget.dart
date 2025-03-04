@@ -11,8 +11,8 @@ import 'package:ld_wbench2/views/widget_key.dart';
 import 'package:ld_wbench2/widgets/ld_app_bar_widget.dart';
 
 // WIDGET 'LdScaffoldWidget' ==========
-class LdScaffoldWidget
-extends LdWidget {
+class   LdScaffoldWidget
+extends LdWidget<LdScaffoldWidgetState, LdScaffoldWidgetCtrl> {
   // ESTÀTICS -------------------------
   static const className = "LdScaffold";
 
@@ -47,7 +47,7 @@ extends LdWidget {
     String? restorationId,
   }): super(
     pViewCtrl: pViewState.viewCtrl,
-    pState: LdScaffoldState(
+    pState: LdScaffoldWidgetState(
       pTitle: pTitle,
       pSubtitle: pSubtitle,
       pViewCtrl: pViewState.viewCtrl,
@@ -58,7 +58,7 @@ extends LdWidget {
     typeName = className;
     
     // Crear explícitament el controlador amb tots els paràmetres
-    ctrl = LdScaffoldCtrl(
+    ctrl = LdScaffoldWidgetCtrl(
       pTag: tag,
       pViewCtrl: pViewState.viewCtrl,
       pState: state,
@@ -94,7 +94,8 @@ extends LdWidget {
 }
 
 // ESTAT 'LdScaffoldState' ============
-class LdScaffoldState extends LdWidgetState {
+class   LdScaffoldWidgetState
+extends LdWidgetState {
   // 🧩 MEMBRES --------------------------
   String _title;
   String? _subtitle;
@@ -109,7 +110,7 @@ class LdScaffoldState extends LdWidgetState {
   }
 
   // 🛠️ CONSTRUCTORS ---------------------
-  LdScaffoldState({
+  LdScaffoldWidgetState({
     required String pTitle, 
     String? pSubtitle, 
     required super.pViewCtrl, 
@@ -126,7 +127,8 @@ class LdScaffoldState extends LdWidgetState {
 }
 
 // CTRL 'LdScaffoldCtrl' ==============
-class LdScaffoldCtrl extends LdWidgetCtrl {
+class   LdScaffoldWidgetCtrl
+extends LdWidgetCtrl {
   // 🧩 MEMBRES --------------------------
   final String _title;
   final String? _subtitle;
@@ -160,7 +162,7 @@ class LdScaffoldCtrl extends LdWidgetCtrl {
   late final LdAppBarWidget? _appBar;
 
   // 🛠️ CONSTRUCTORS ---------------------
-  LdScaffoldCtrl({
+  LdScaffoldWidgetCtrl({
     required super.pTag, 
     required super.pViewCtrl, 
     required super.pState,
@@ -208,7 +210,7 @@ class LdScaffoldCtrl extends LdWidgetCtrl {
   
   // 📥 GETTERS/SETTERS ------------------
   @override
-  LdScaffoldState get state => super.state as LdScaffoldState;
+  LdScaffoldWidgetState get state => super.state as LdScaffoldWidgetState;
 
   // 'LdWidgetCtrl' -------------------
   @override

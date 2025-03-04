@@ -8,7 +8,7 @@ import 'package:ld_wbench2/core/ld_view_ctrl.dart';
 import 'package:ld_wbench2/core/ld_view_state.dart';
 import 'package:ld_wbench2/core/ld_widget_ctrl.dart';
 import 'package:ld_wbench2/core/ld_widget_state.dart';
-import 'package:ld_wbench2/ld_theme_controller.dart';
+import 'package:ld_wbench2/theme/ld_theme_controller.dart';
 
 abstract class LdWidget<
   S extends LdWidgetState, 
@@ -32,8 +32,8 @@ with    LdIdMixin {
     _state    = pState;
 
   // 📥 GETTERS/SETTERS ------------------
-  LdViewCtrl    get viewCtrl  => _viewCtrl;
-  LdViewState   get viewState => _viewCtrl.state;
+  LdViewCtrl  get viewCtrl  => _viewCtrl;
+  LdViewState get viewState => _viewCtrl.state;
 
   S get state => _state;
   C  get ctrl  => _ctrl;
@@ -44,16 +44,15 @@ with    LdIdMixin {
   Widget build(BuildContext pCtx) {
     _getBuilder ??= GetBuilder<LdViewCtrl>(
       id: ctrl.tag,
-      tag: ctrl.tag,
+      tag: viewCtrl.tag,
       init: viewCtrl,
       builder: (viewController) => GetBuilder<LdThemeController>(
-        id: ctrl.tag,
-        tag: ctrl.tag,
-        init: LdThemeController.instance,
+        init: LdThemeController.inst,
+        tag:  LdThemeController.ctrlTag,
         builder: (themeController) => _ctrl.buildWidget(pCtx),
       ),
     );
-  
+
     return _getBuilder!; 
   }
 }

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ld_wbench2/ld_sabina_controller.dart';
+import 'package:ld_wbench2/theme/ld_theme_controller.dart';
 import 'package:ld_wbench2/translations/tr.dart';
 import 'package:ld_wbench2/tools/consts/devices.dart';
 import 'package:ld_wbench2/views/app_routes.dart';
@@ -23,7 +24,43 @@ extends StatelessWidget {
 
   // 'StatelessWidget' ----------------
   @override
-  Widget build(BuildContext context) {
+Widget build(BuildContext context) {
+  return ScreenUtilInit(
+    designSize: iPhone8PlusSize,
+    minTextAdapt: true,
+    splitScreenMode: true,
+    builder: (_, child) =>
+      Obx(() => 
+        GetMaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'LdSabinaApp',
+          themeMode: _sCtrl.themeMode.value,
+          theme: LdThemeController.inst.lightTheme,  // Utilitzem el tema personalitzat
+          darkTheme: LdThemeController.inst.darkTheme,  // Utilitzem el tema personalitzat
+          locale: Get.deviceLocale,
+          fallbackLocale: Locale('ca'),
+          translations: Tr.inst,
+          supportedLocales: const [
+            Locale('ca'),
+            Locale('es'),
+            Locale('en'),
+            Locale('fr'),
+            Locale('pt'),
+          ],
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          initialRoute: AppRoutes.initialRoute,
+          getPages: AppRoutes.pages,
+        )
+    )
+  );
+}
+
+  // @override
+  Widget build_(BuildContext context) {
     return ScreenUtilInit(
     designSize: iPhone8PlusSize,
     minTextAdapt: true,

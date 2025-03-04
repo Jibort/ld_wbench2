@@ -9,7 +9,7 @@ import 'package:ld_wbench2/core/ld_widget_state.dart';
 import 'package:ld_wbench2/tools/null_mang.dart';
 
 class LdContainer
-extends LdWidget {
+extends LdWidget<LdContainerState, LdContainerCtrl> {
   // ESTÀTICS -------------------------
   static String className = "LdContainer";
 

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ld_wbench2/ld_sabina_application.dart';
 import 'package:ld_wbench2/ld_sabina_controller.dart';
-import 'package:ld_wbench2/ld_theme_controller.dart';
+import 'package:ld_wbench2/theme/ld_theme_controller.dart';
 import 'package:ld_wbench2/services/services.dart';
 import 'package:ld_wbench2/tools/debug.dart';
 

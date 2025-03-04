@@ -15,7 +15,8 @@ import 'package:ld_wbench2/translations/tr.dart';
 import 'package:ld_wbench2/views/widget_key.dart';
 
 // WIDGET 'LdAppBarWidget' ============
-class LdAppBarWidget extends LdWidget {
+class   LdAppBarWidget
+extends LdWidget<LdAppBarState, LdAppBarCtrl> {
   // ESTÀTICS -------------------------
   static String className = "LdAppBar";
 
@@ -55,7 +56,7 @@ class LdAppBarWidget extends LdWidget {
 } // LdAppBarWidget
 
 // ESTAT DE 'LdAppBarWidget' ==========
-class LdAppBarState
+class    LdAppBarState
  extends LdWidgetState {
 
   // 🧩 MEMBRES --------------------------
