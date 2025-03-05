@@ -17,10 +17,10 @@ extends GetWidget<C>
 with    LdIdMixin {
 
   // 🧩 MEMBRES ------------------------
-  GetBuilder<LdViewCtrl>? _getBuilder;
-  final LdViewCtrl        _viewCtrl; // Cotrolador de la vista on es renderitza el Widget.
-  final S                 _state;    // Estat del Widget.
-  late final C            _ctrl;     // Controlador del Widget.
+  GetBuilder<LdThemeController>? _getBuilder;
+  final LdViewCtrl _viewCtrl; // Cotrolador de la vista on es renderitza el Widget.
+  final S          _state;    // Estat del Widget.
+  late final C     _ctrl;     // Controlador del Widget.
 
   // CONSTRUCTOR ------------------
   LdWidget({ 
@@ -42,17 +42,32 @@ with    LdIdMixin {
   // CONSTRUCCIÓ DE LA VISTA ----------
   @override
   Widget build(BuildContext pCtx) {
-    _getBuilder ??= GetBuilder<LdViewCtrl>(
-      id: ctrl.tag,
-      tag: viewCtrl.tag,
-      init: viewCtrl,
-      builder: (viewController) => GetBuilder<LdThemeController>(
-        init: LdThemeController.inst,
-        tag:  LdThemeController.ctrlTag,
-        builder: (themeController) => _ctrl.buildWidget(pCtx),
+    _getBuilder ??= GetBuilder<LdThemeController>(
+      tag: LdThemeController.ctrlTag,
+      builder: (themeController) => GetBuilder<LdViewCtrl>(
+        id: ctrl.tag,
+        tag: viewCtrl.tag,
+        init: viewCtrl,
+        builder: (viewController) => _ctrl.buildWidget(pCtx),
       ),
     );
 
     return _getBuilder!; 
   }
+
+  // @override
+  // Widget build(BuildContext pCtx) {
+  //   _getBuilder ??= GetBuilder<LdViewCtrl>(
+  //     id: ctrl.tag,
+  //     tag: viewCtrl.tag,
+  //     init: viewCtrl,
+  //     builder: (viewController) => GetBuilder<LdThemeController>(
+  //       init: LdThemeController.inst,
+  //       tag:  LdThemeController.ctrlTag,
+  //       builder: (themeController) => _ctrl.buildWidget(pCtx),
+  //     ),
+  //   );
+
+  //   return _getBuilder!; 
+  // }
 }

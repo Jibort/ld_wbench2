@@ -45,7 +45,7 @@ extends LdWidget<LdAppBarState, LdAppBarCtrl> {
     
     ctrl = LdAppBarCtrl(
       pViewCtrl: viewCtrl, 
-      pState: state as LdAppBarState,
+      pState: state,
       pActions: pActions,
       showDrawerIcon: showDrawerIcon,
       showBackButton: showBackButton,
@@ -97,7 +97,7 @@ class    LdAppBarState
 class LdAppBarCtrl
 extends LdWidgetCtrl {
   // 🧩 MEMBRES --------------------------
-  GetBuilder<LdViewCtrl>? getBuilder;
+  GetBuilder<LdWidgetCtrl>? getBuilder;
   final List<Widget>? pActions;
   final bool showDrawerIcon;
   final bool showBackButton;
@@ -144,10 +144,10 @@ extends LdWidgetCtrl {
     final barState = state as LdAppBarState;
 
     // Cos de la barra.
-    getBuilder ??= GetBuilder<LdViewCtrl>( // GetBuilder<LdViewCtrl>(
+    getBuilder ??= GetBuilder<LdWidgetCtrl>( // GetBuilder<LdViewCtrl>(
       id: WidgetKey.appBarProgress.idx,
       tag: WidgetKey.appBarProgress.idx,
-      init: viewCtrl,
+      init: widgetState.ctrl,
       builder: (pCtx) {
         var (int iLen, int iDids, double? dRatio) = viewCtrl.state.stats;
         String? lElm = Get.parameters[LdState.loadingElm];

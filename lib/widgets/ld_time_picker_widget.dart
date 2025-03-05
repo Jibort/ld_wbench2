@@ -54,11 +54,11 @@ extends LdWidget<LdTimePickerWidgetState, LdTimePickerWidgetCtrl> {
   }
   
   // METHODS --------------------------
-  TimeOfDay? get selectedTime => (state as LdTimePickerWidgetState).selectedTime;
-  set selectedTime(TimeOfDay? value) => (state as LdTimePickerWidgetState).selectedTime = value;
+  TimeOfDay? get selectedTime => state.selectedTime;
+  set selectedTime(TimeOfDay? value) => state.selectedTime = value;
   
-  bool validate() => (ctrl as LdTimePickerWidgetCtrl).validate();
-  void reset() => (ctrl as LdTimePickerWidgetCtrl).reset();
+  bool validate() => ctrl.validate();
+  void reset() => ctrl.reset();
 }
 
 class LdTimePickerWidgetState extends LdWidgetState {

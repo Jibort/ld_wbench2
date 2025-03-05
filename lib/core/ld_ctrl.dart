@@ -4,6 +4,8 @@
 import 'package:get/get.dart';
 import 'package:ld_wbench2/core/ld_id_mixin.dart';
 import 'package:ld_wbench2/core/ld_state.dart';
+import 'package:ld_wbench2/core/ld_view_ctrl.dart';
+import 'package:ld_wbench2/core/ld_widget_ctrl.dart';
 import 'package:ld_wbench2/tools/debug.dart';
 
 abstract class LdCtrl<
@@ -24,7 +26,13 @@ with     LdIdMixin {
     tag = pTag;
     typeName = className;
     pState.ctrl = this as C;
-    Get.put(this, tag: tag,  permanent: true);
+    if (this is LdWidgetCtrl) {
+      Get.put<LdWidgetCtrl>(this as LdWidgetCtrl, tag: tag,  permanent: true);
+    } else if (this is LdViewCtrl) {
+      Get.put<LdViewCtrl>(this as LdViewCtrl, tag: tag,  permanent: true);
+    } else {
+      Get.put<LdCtrl>(this, tag: tag,  permanent: true);
+    }
   }
 
   // 📥 GETTERS/SETTERS ----------------

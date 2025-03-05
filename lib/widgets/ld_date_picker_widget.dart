@@ -56,11 +56,11 @@ extends LdWidget<LdDatePickerWidgetState, LdDatePickerWidgetCtrl> {
   }
   
   // METHODS --------------------------
-  DateTime? get selectedDate => (state as LdDatePickerWidgetState).selectedDate;
-  set selectedDate(DateTime? value) => (state as LdDatePickerWidgetState).selectedDate = value;
+  DateTime? get selectedDate => state.selectedDate;
+  set selectedDate(DateTime? value) => state.selectedDate = value;
   
-  bool validate() => (ctrl as LdDatePickerWidgetCtrl).validate();
-  void reset() => (ctrl as LdDatePickerWidgetCtrl).reset();
+  bool validate() => ctrl.validate();
+  void reset() => ctrl.reset();
 }
 
 class LdDatePickerWidgetState extends LdWidgetState {

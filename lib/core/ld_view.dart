@@ -13,7 +13,7 @@ extends GetView<C> {
   static const className = "LdView";
 
   // 🧩 MEMBRES ------------------------
-  GetBuilder<C>? getBuilder;
+  GetBuilder<LdThemeController>? getBuilder;
   final S _state;
   final C _ctrl;
 
@@ -31,17 +31,32 @@ extends GetView<C> {
   @override
   @mustCallSuper
   Widget build(BuildContext pCtx) {
-    getBuilder ??= GetBuilder<C>(
-      id: ctrl.tag,     // Identificador per a l'actualització del GetBuilder.
-      tag: ctrl.tag,    // Identificador per a la cerca dins el registre de GetX.
-      init: ctrl,       // Controlador on escolta el GetBuilder. 
-      builder: (vCtrl) => GetBuilder<LdThemeController>(
-        init: LdThemeController.inst,
-        tag:  LdThemeController.ctrlTag,
-        builder: (themeController) => _ctrl.buildView(pCtx),
-      ),  // Construcció de la vista.
+    getBuilder ??= GetBuilder<LdThemeController>(
+      tag: LdThemeController.ctrlTag,
+      builder: (themeController) => GetBuilder<C>(
+        id: ctrl.tag,     // Identificador per a l'actualització del GetBuilder.
+        tag: ctrl.tag,    // Identificador per a la cerca dins el registre de GetX.
+        init: ctrl,       // Controlador on escolta el GetBuilder. 
+        builder: (vCtrl) => _ctrl.buildView(pCtx),
+      ),
     );
 
     return getBuilder!;
   }
+  // @override
+  // @mustCallSuper
+  // Widget build(BuildContext pCtx) {
+  //   getBuilder ??= GetBuilder<C>(
+  //     id: ctrl.tag,     // Identificador per a l'actualització del GetBuilder.
+  //     tag: ctrl.tag,    // Identificador per a la cerca dins el registre de GetX.
+  //     init: ctrl,       // Controlador on escolta el GetBuilder. 
+  //     builder: (vCtrl) => GetBuilder<LdThemeController>(
+  //       init: LdThemeController.inst,
+  //       tag:  LdThemeController.ctrlTag,
+  //       builder: (themeController) => _ctrl.buildView(pCtx),
+  //     ),  // Construcció de la vista.
+  //   );
+
+  //   return getBuilder!;
+  // }
 }

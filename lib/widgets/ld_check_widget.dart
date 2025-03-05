@@ -46,11 +46,11 @@ extends LdWidget<LdCheckWidgetState, LdCheckWidgetCtrl> {
   }
   
   // METHODS --------------------------
-  bool get value => (state as LdCheckWidgetState).value;
-  set value(bool val) => (state as LdCheckWidgetState).value = val;
+  bool get value => state.value;
+  set value(bool val) => state.value = val;
   
-  bool validate() => (ctrl as LdCheckWidgetCtrl).validate();
-  void reset() => (ctrl as LdCheckWidgetCtrl).reset();
+  bool validate() => ctrl.validate();
+  void reset() => ctrl.reset();
 }
 
 class LdCheckWidgetState extends LdWidgetState {
